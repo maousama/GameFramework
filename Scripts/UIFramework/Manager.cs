@@ -1,16 +1,10 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using UnityEngine.UI;
-
-namespace UIFramework
+﻿namespace UIFramework
 {
     public class Manager
     {
         private static FrameStack frameStack = new FrameStack();
 
-        public static void OpenFrame(string frameName)
+        public static void OpenFrame(string frameName, IFrameNode parentNode)
         {
             
         }
@@ -18,6 +12,11 @@ namespace UIFramework
         public static void CloseFrame(string frameName)
         {
 
+        }
+
+        public static void PopFrame(Frame frame)
+        {
+            
         }
     }
 }

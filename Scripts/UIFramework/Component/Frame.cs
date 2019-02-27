@@ -4,12 +4,20 @@ using UnityEngine;
 namespace UIFramework
 {
     [RequireComponent(typeof(Canvas))]
-    internal sealed class Frame : MonoBehaviour
+    public sealed class Frame : Component, IFrameNode
     {
         public static Camera uiCamera;
 
         [HideInInspector]
         public Canvas canvas;
+
+        public Transform Transform
+        {
+            get
+            {
+                return transform;
+            }
+        }
 
         private void Awake()
         {
@@ -19,7 +27,7 @@ namespace UIFramework
 
         private void OnDestroy()
         {
-            
+
         }
 
     }
