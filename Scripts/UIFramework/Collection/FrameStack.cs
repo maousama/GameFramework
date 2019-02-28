@@ -73,6 +73,11 @@ namespace UIFramework
                 RemoveAt(index);
             }
         }
+        internal Frame GetFrame(int index)
+        {
+            if (IsInRange(index)) return list[index];
+            else return null;
+        }
 
         private bool IsInRange(int index) { return !(index <= 0 || index >= list.Count); }
         private int GetIndex(Frame frame) { return frameToIndex[frame]; }

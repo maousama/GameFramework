@@ -33,21 +33,24 @@ namespace UIFramework
             //根节点交换位置不能改变层级必须通过SortingOrder
             if (canvas.isRootCanvas)
             {
-                canvas.sortingOrder = newIndex;
+                canvas.sortingOrder = newIndex * 10;
             }
             //子节点默认根据SublingIndex决定其顺序,如果你想重写SortingOrder来决定顺序也可以.
             else
             {
-
+                transform.SetSiblingIndex(newIndex);
             }
         }
 
         private void Awake()
         {
             canvas = GetComponent<Canvas>();
-            if (canvas.renderMode == RenderMode.ScreenSpaceOverlay) throw new Exception("Canvas rendermode error!");
+
             canvas.worldCamera = uiCamera;
         }
-
+        private void Start()
+        {
+            if (canvas.renderMode == RenderMode.ScreenSpaceOverlay) throw new Exception("Canvas rendermode error!");
+        }
     }
 }
