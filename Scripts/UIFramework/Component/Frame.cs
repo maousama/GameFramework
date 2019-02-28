@@ -1,6 +1,5 @@
 ﻿using System;
 using UnityEngine;
-using UnityEngine.EventSystems;
 
 namespace UIFramework
 {
@@ -10,10 +9,11 @@ namespace UIFramework
         internal static Camera uiCamera;
 
         internal IFrameNode parentNode;
+        [SerializeField]
         private FrameStack framestack;
         [HideInInspector]
         private Canvas canvas;
-
+        private Transform frameContainer;
 
         public FrameStack FrameStack
         {
@@ -23,7 +23,16 @@ namespace UIFramework
                 return framestack;
             }
         }
-        public Transform Transform { get { return transform; } }
+        public Transform FrameContainer
+        {
+            get
+            {
+                if (!frameContainer) frameContainer = new GameObject("TrameContainer").transform;
+                return frameContainer;
+            }
+        }
+
+        public bool IsFrameStackExist() { return framestack != null; }
 
         /// <summary>
         /// 在Frame于栈中的索引改变时调用
@@ -45,7 +54,6 @@ namespace UIFramework
         private void Awake()
         {
             canvas = GetComponent<Canvas>();
-
             canvas.worldCamera = uiCamera;
         }
         private void Start()

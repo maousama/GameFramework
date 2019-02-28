@@ -7,14 +7,15 @@ namespace UIFramework
     /// </summary>
     public class Manager : MonoSingleton<Manager>, IFrameNode
     {
+        [SerializeField]
         private FrameStack frameStack = new FrameStack();
 
-        public Transform Transform { get { return transform; } }
+        public Transform FrameContainer { get { return transform; } }
         public FrameStack FrameStack { get { return frameStack; } }
 
         public void OpenFrame(string frameName, IFrameNode parentNode)
         {
-            GameObject instance = AssetsAgent.GetGameObject(frameName, parentNode.Transform);
+            GameObject instance = AssetsAgent.GetGameObject(frameName, parentNode.FrameContainer);
             Frame frame = instance.GetComponent<Frame>();
             parentNode.FrameStack.Push(frame);
             frame.parentNode = parentNode;
@@ -26,11 +27,17 @@ namespace UIFramework
 
         public void CloseFrame(Frame frame)
         {
+            if (frame.IsFrameStackExist())
+            {
+                Frame[] array = frame.FrameStack.ToArray();
+                frame.FrameStack.Clear();
+                for (int i = 0; i < array.Length; i++) CloseFrame(array[i]);
+            }
             AssetsAgent.DestroyGameObject(frame.gameObject);
         }
         public void CloseFrame(IFrameNode parentNode, int index)
         {
-            if (parentNode != null) AssetsAgent.DestroyGameObject(parentNode.FrameStack.GetFrame(index).gameObject);
+            if (parentNode != null) CloseFrame(parentNode.FrameStack.GetFrame(index));
         }
 
         public void PopFrame(Frame frame)
@@ -42,14 +49,14 @@ namespace UIFramework
             frameNode.FrameStack.JumpToTop(index);
         }
 
+        public bool IsFrameStackExist() { return frameStack != null; }
+
         protected override void Init()
         {
             base.Init();
             gameObject.hideFlags = HideFlags.NotEditable;
-
             InitFrameUICamera();
         }
-
         private void InitFrameUICamera()
         {
             Camera uiCamera = gameObject.AddComponent<Camera>();
@@ -63,5 +70,7 @@ namespace UIFramework
 
             Frame.uiCamera = uiCamera;
         }
+
+
     }
 }

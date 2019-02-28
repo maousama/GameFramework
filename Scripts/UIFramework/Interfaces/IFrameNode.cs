@@ -4,7 +4,8 @@ namespace UIFramework
 {
     public interface IFrameNode
     {
-        Transform Transform { get; }
+        Transform FrameContainer { get; }
         FrameStack FrameStack { get; }
+        bool IsFrameStackExist();
     }
 }

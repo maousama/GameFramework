@@ -3,11 +3,13 @@ using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
-
+using UnityEngine;
 namespace UIFramework
 {
+    [Serializable]
     public class FrameStack
     {
+        [SerializeField]
         private List<Frame> list = new List<Frame>();
         private Dictionary<Frame, int> frameToIndex = new Dictionary<Frame, int>();
 
@@ -77,6 +79,10 @@ namespace UIFramework
         {
             if (IsInRange(index)) return list[index];
             else return null;
+        }
+        internal Frame[] ToArray()
+        {
+            return list.ToArray<Frame>();
         }
 
         private bool IsInRange(int index) { return !(index <= 0 || index >= list.Count); }
