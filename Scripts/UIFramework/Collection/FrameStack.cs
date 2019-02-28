@@ -28,6 +28,7 @@ namespace UIFramework
         {
             frameToIndex.Add(frame, Count);
             list.Add(frame);
+            frame.OnIndexChange(Count);
         }
         internal bool Contains(Frame frame)
         {
@@ -42,13 +43,8 @@ namespace UIFramework
         {
             if (!IsInRange(index)) return;
             Frame temp = list[index];
-            list.RemoveAt(index);
-            for (int i = index; i < Count; i++)
-            {
-                frameToIndex[list[i]] -= 1;
-            }
-            list.Add(temp);
-            frameToIndex[temp] = Count - 1;
+            RemoveAt(index);
+            Push(temp);
         }
         internal void JumpToTop(Frame frame)
         {
@@ -58,11 +54,24 @@ namespace UIFramework
                 JumpToTop(index);
             }
         }
+        internal void RemoveAt(int index)
+        {
+            if (!IsInRange(index)) return;
+            frameToIndex.Remove(list[index]);
+            list.RemoveAt(index);
+            for (int i = index; i < Count; i++)
+            {
+                frameToIndex[list[i]] = i;
+                list[i].OnIndexChange(i);
+            }
+        }
         internal void Remove(Frame frame)
         {
-            int index = frameToIndex[frame];
-            list.RemoveAt(index);
-            frameToIndex.Remove(frame);
+            int index;
+            if (frameToIndex.TryGetValue(frame, out index))
+            {
+                RemoveAt(index);
+            }
         }
 
         private bool IsInRange(int index) { return !(index <= 0 || index >= list.Count); }

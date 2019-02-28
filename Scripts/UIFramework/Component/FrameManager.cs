@@ -11,25 +11,24 @@ namespace UIFramework
         private FrameStack frameStack = new FrameStack();
 
         public Transform Transform { get { return transform; } }
-
         public FrameStack FrameStack { get { return frameStack; } }
-
 
         public void OpenFrame(string frameName, IFrameNode parentNode)
         {
             GameObject instance = AssetsAgent.GetGameObject(frameName, parentNode.Transform);
             Frame frame = instance.GetComponent<Frame>();
             parentNode.FrameStack.Push(frame);
-
-
+            frame.parentNode = parentNode;
         }
+
         public void CloseFrame(Frame frame)
         {
-
+            AssetsAgent.DestroyGameObject(frame.gameObject);
         }
+
         public void PopFrame(Frame frame)
         {
-
+            frame.parentNode.FrameStack.JumpToTop(frame);
         }
     }
 }
