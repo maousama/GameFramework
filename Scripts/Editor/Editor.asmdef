@@ -1,0 +1,10 @@
+{
+    "name": "Editor",
+    "references": [
+        "UIFramework"
+    ],
+    "optionalUnityReferences": [],
+    "includePlatforms": [],
+    "excludePlatforms": [],
+    "allowUnsafeCode": false
+}
