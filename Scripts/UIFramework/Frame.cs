@@ -14,20 +14,7 @@ namespace Assets.Scripts.UIFramework
         [HideInInspector]
         private Canvas canvas;
         private Transform frameContainer;
-        private Transform componentContainer;
 
-        public Transform ComponentContainer
-        {
-            get
-            {
-                if (!componentContainer)
-                {
-                    componentContainer = transform.Find("ComponentContainer");
-                    if (!componentContainer) Debug.LogError(name + " frame doesnt have component container but you try to get it !!");
-                }
-                return componentContainer;
-            }
-        }
         public FrameStack FrameStack
         {
             get
@@ -41,7 +28,6 @@ namespace Assets.Scripts.UIFramework
             get
             {
                 if (!frameContainer) frameContainer = new GameObject("TrameContainer").transform;
-                frameContainer.transform.SetAsLastSibling();
                 return frameContainer;
             }
         }
