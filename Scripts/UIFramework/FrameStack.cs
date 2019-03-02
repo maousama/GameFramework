@@ -1,10 +1,8 @@
 ﻿using System;
-using System.Collections;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
 using UnityEngine;
-namespace UIFramework
+
+namespace Assets.Scripts.UIFramework
 {
     [Serializable]
     public class FrameStack
@@ -13,18 +11,20 @@ namespace UIFramework
         private List<Frame> list = new List<Frame>();
         private Dictionary<Frame, int> frameToIndex = new Dictionary<Frame, int>();
 
-        internal int Count { get { return list.Count; } }
+        private int Count { get { return list.Count; } }
+        private int lastIndex { get { return Count - 1; } }
+
         internal Frame Pop()
         {
             if (list.Count == 0) return null;
-            Frame frame = list.LastOrDefault();
-            frameToIndex.Remove(list[Count - 1]);
-            list.RemoveAt(Count - 1);
+            Frame frame = list[lastIndex];
+            frameToIndex.Remove(list[lastIndex]);
+            list.RemoveAt(lastIndex);
             return frame;
         }
         internal Frame Peek()
         {
-            return list.LastOrDefault();
+            return list[lastIndex];
         }
         internal void Push(Frame frame)
         {
@@ -82,9 +82,8 @@ namespace UIFramework
         }
         internal Frame[] ToArray()
         {
-            return list.ToArray<Frame>();
+            return list.ToArray();
         }
-
         private bool IsInRange(int index) { return !(index <= 0 || index >= list.Count); }
         private int GetIndex(Frame frame) { return frameToIndex[frame]; }
     }

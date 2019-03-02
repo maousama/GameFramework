@@ -1,6 +1,6 @@
 ﻿using UnityEngine;
 
-namespace UIFramework
+namespace Assets.Scripts.UIFramework
 {
     public interface IFrameNode
     {

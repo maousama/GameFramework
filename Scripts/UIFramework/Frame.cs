@@ -1,7 +1,7 @@
 ﻿using System;
 using UnityEngine;
 
-namespace UIFramework
+namespace Assets.Scripts.UIFramework
 {
     [RequireComponent(typeof(Canvas))]
     public sealed class Frame : MonoBehaviour, IFrameNode

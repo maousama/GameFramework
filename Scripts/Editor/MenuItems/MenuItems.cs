@@ -1,4 +1,4 @@
-﻿using UIFramework;
+﻿using Assets.Scripts.UIFramework;
 using UnityEditor;
 using UnityEngine;
 using UnityEngine.UI;

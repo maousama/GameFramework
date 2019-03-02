@@ -1,6 +1,6 @@
 ﻿using UnityEngine;
 
-namespace UIFramework
+namespace Assets.Scripts.UIFramework
 {
     /// <summary>
     /// 一个单例物体负责管理Frame供外部使用同时作为Frame的根节点使用
@@ -56,6 +56,7 @@ namespace UIFramework
             base.Init();
             gameObject.hideFlags = HideFlags.NotEditable;
             InitFrameUICamera();
+            DontDestroyOnLoad(gameObject);
         }
         private void InitFrameUICamera()
         {
