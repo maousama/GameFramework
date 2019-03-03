@@ -8,6 +8,9 @@ namespace Assets.Scripts.UIFramework
     {
         internal static Camera uiCamera;
 
+        public Action OnSetToTop;
+        public Action OnRemoveFromTop;
+
         internal IFrameNode parentNode;
         [SerializeField]
         private FrameStack framestack;
@@ -37,7 +40,7 @@ namespace Assets.Scripts.UIFramework
         /// <summary>
         /// 在Frame于栈中的索引改变时调用
         /// </summary>
-        internal void OnIndexChange(int newIndex)
+        internal void SetSortingOrder(int newIndex)
         {
             //根节点交换位置不能改变层级必须通过SortingOrder
             if (canvas.isRootCanvas)
@@ -54,11 +57,7 @@ namespace Assets.Scripts.UIFramework
         private void Awake()
         {
             canvas = GetComponent<Canvas>();
-            canvas.worldCamera = uiCamera;
-        }
-        private void Start()
-        {
-            if (canvas.renderMode == RenderMode.ScreenSpaceOverlay) throw new Exception("Canvas rendermode error!");
+            if (canvas.renderMode == RenderMode.ScreenSpaceCamera) canvas.worldCamera = uiCamera;
         }
     }
 }

@@ -20,6 +20,8 @@ namespace Assets.Scripts.UIFramework
             Frame frame = list[lastIndex];
             frameToIndex.Remove(list[lastIndex]);
             list.RemoveAt(lastIndex);
+            frame.OnRemoveFromTop();
+            list[lastIndex].OnSetToTop();
             return frame;
         }
         internal Frame Peek()
@@ -28,9 +30,12 @@ namespace Assets.Scripts.UIFramework
         }
         internal void Push(Frame frame)
         {
+            list[lastIndex].OnRemoveFromTop();
             frameToIndex.Add(frame, Count);
             list.Add(frame);
-            frame.OnIndexChange(Count);
+            frame.OnSetToTop();
+            frame.SetSortingOrder(Count);
+
         }
         internal bool Contains(Frame frame)
         {
@@ -59,12 +64,13 @@ namespace Assets.Scripts.UIFramework
         internal void RemoveAt(int index)
         {
             if (!IsInRange(index)) return;
+            if (index == lastIndex) { Pop(); return; }
             frameToIndex.Remove(list[index]);
             list.RemoveAt(index);
             for (int i = index; i < Count; i++)
             {
                 frameToIndex[list[i]] = i;
-                list[i].OnIndexChange(i);
+                list[i].SetSortingOrder(i);
             }
         }
         internal void Remove(Frame frame)
@@ -72,6 +78,7 @@ namespace Assets.Scripts.UIFramework
             int index;
             if (frameToIndex.TryGetValue(frame, out index))
             {
+                if (index == lastIndex) { Pop(); return; }
                 RemoveAt(index);
             }
         }
