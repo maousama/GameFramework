@@ -10,12 +10,16 @@ public class MainMenuView : MonoBehaviour
     // Start is called before the first frame update
     void Start()
     {
-        verticalLayoutGroup.GetChild(0).GetComponent<Button>().Select();
+        verticalLayoutGroup.GetChild(0).GetComponent<Button>();
     }
 
     // Update is called once per frame
     void Update()
     {
+        for (int i = 0; i < Selectable.allSelectables.Count; i++)
+        {
+            Debug.Log(Selectable.allSelectables[i].name);
+        }
 
     }
 
