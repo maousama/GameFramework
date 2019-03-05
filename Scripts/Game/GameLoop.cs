@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Assets.Scripts.UIFramework;
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
@@ -8,18 +9,22 @@ using UnityEngine.SceneManagement;
 /// </summary>
 public class GameLoop : MonoBehaviour
 {
+    public static bool hasStartUp = false;
+
     private void Awake()
     {
-        gameObject.name = "GameLoop";
-        if (GameObject.Find("GameLoop")) throw new Exception("There is already a GameLoop in this scene, you can create anohter one!!");
-        GameLoop[] gameLoops = gameObject.GetComponents<GameLoop>();
-        if (gameLoops.Length > 1) throw new Exception("There are multiple components on the GameLoop! Please remove the extra components!");
-        return;
+        if (hasStartUp) throw new Exception("You have already start up game! Please check GameLoop component in the scene!");
+        else
+        {
+            gameObject.name = "GameLoop";
+            Manager.Instance.OpenFrame("MainMenu");
+        }
+
     }
     // Use this for initialization
     void Start()
     {
-        
+
     }
 
     // Update is called once per frame

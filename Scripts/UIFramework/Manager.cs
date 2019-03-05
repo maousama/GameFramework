@@ -1,4 +1,5 @@
-﻿using UnityEngine;
+﻿using AssetsManager;
+using UnityEngine;
 
 namespace Assets.Scripts.UIFramework
 {
@@ -8,10 +9,27 @@ namespace Assets.Scripts.UIFramework
     public class Manager : MonoSingleton<Manager>, IFrameNode
     {
         [SerializeField]
+        private Frame currentFocusFrame;
+
+        [SerializeField]
         private FrameStack frameStack = new FrameStack();
 
         public Transform FrameContainer { get { return transform; } }
         public FrameStack FrameStack { get { return frameStack; } }
+
+        public Frame CurrentFocusFrame
+        {
+            get
+            {
+                return currentFocusFrame;
+            }
+            private set
+            {
+                if (currentFocusFrame != null) currentFocusFrame.OnFocusChange?.Invoke(false);
+                currentFocusFrame = value;
+                if (currentFocusFrame != null) currentFocusFrame.OnFocusChange?.Invoke(true);
+            }
+        }
 
         public void OpenFrame(string frameName, IFrameNode parentNode)
         {
@@ -19,37 +37,43 @@ namespace Assets.Scripts.UIFramework
             Frame frame = instance.GetComponent<Frame>();
             parentNode.FrameStack.Push(frame);
             frame.parentNode = parentNode;
+
+            CurrentFocusFrame = frame;
         }
         public void OpenFrame(string frameName)
         {
             OpenFrame(frameName, this);
         }
-
         public void CloseFrame(Frame frame)
         {
-            if (frame.IsFrameStackExist())
+            if (frame.HasFrameStack())
             {
                 Frame[] array = frame.FrameStack.ToArray();
                 frame.FrameStack.Clear();
                 for (int i = 0; i < array.Length; i++) CloseFrame(array[i]);
             }
+            FrameStack stack = frame.parentNode.FrameStack;
+            bool topChange = (frame == stack.Peek());
+            stack.Remove(frame);
+            if (topChange) CurrentFocusFrame = FindFocusFrame(stack);
             AssetsAgent.DestroyGameObject(frame.gameObject);
         }
         public void CloseFrame(IFrameNode parentNode, int index)
         {
             if (parentNode != null) CloseFrame(parentNode.FrameStack.GetFrame(index));
         }
-
-        public void PopFrame(Frame frame)
+        public void SetFrameToTop(Frame frame)
         {
             frame.parentNode.FrameStack.JumpToTop(frame);
+            CurrentFocusFrame = FindFocusFrame(frame.parentNode.FrameStack);
         }
-        public void PopFrame(IFrameNode frameNode, int index)
+        public void SetFrameToTop(IFrameNode frameNode, int index)
         {
             frameNode.FrameStack.JumpToTop(index);
+            CurrentFocusFrame = FindFocusFrame(frameNode.FrameStack);
         }
 
-        public bool IsFrameStackExist() { return frameStack != null; }
+        public bool HasFrameStack() { return frameStack != null; }
 
         protected override void Init()
         {
@@ -71,7 +95,16 @@ namespace Assets.Scripts.UIFramework
 
             Frame.uiCamera = uiCamera;
         }
-
+        private Frame FindFocusFrame(FrameStack stack)
+        {
+            Frame stackTop = stack.Peek();
+            if (stackTop)
+            {
+                if (stackTop.HasFrameStack() && stackTop.FrameStack.Count > 0) return FindFocusFrame(stackTop.FrameStack);
+                else return stackTop;
+            }
+            return null;
+        }
 
     }
 }

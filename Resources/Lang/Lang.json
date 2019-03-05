@@ -1,9 +1,12 @@
 {
-    "中文": 
-    {
-        "Start": "开始游戏",
-        "Option": "设置",
-        "Quit": "退出"
-        
-    }
+  "中文": 
+  {
+    "Terrain Generator": "地形生成器",
+
+    "New": "新建",
+    "Continue": "继续",
+    "Option": "设置",
+    "Quit": "退出"
+
+  }
 }

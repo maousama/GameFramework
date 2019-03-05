@@ -10,8 +10,8 @@ public class MenuItems : MonoBehaviour
     {
         GameObject go = new GameObject("Frame");
         Canvas canvas = go.AddComponent<Canvas>();
-        CanvasScaler canvasScaler = go.AddComponent<CanvasScaler>();
-        GraphicRaycaster graphicRaycaster = go.AddComponent<GraphicRaycaster>();
+        go.AddComponent<CanvasScaler>();
+        go.AddComponent<GraphicRaycaster>();
         go.AddComponent<Frame>();
         canvas.renderMode = RenderMode.ScreenSpaceCamera;
         GameObject componentContainer = new GameObject("ComponentContainer", typeof(RectTransform));

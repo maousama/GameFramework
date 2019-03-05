@@ -8,15 +8,15 @@ namespace Assets.Scripts.UIFramework
     {
         internal static Camera uiCamera;
 
-        public Action OnSetToTop;
-        public Action OnRemoveFromTop;
+        public Action<bool> OnFocusChange;
 
         internal IFrameNode parentNode;
+
+        private Transform frameContainer;
         [SerializeField]
         private FrameStack framestack;
         [HideInInspector]
         private Canvas canvas;
-        private Transform frameContainer;
 
         public FrameStack FrameStack
         {
@@ -35,11 +35,8 @@ namespace Assets.Scripts.UIFramework
             }
         }
 
-        public bool IsFrameStackExist() { return framestack != null; }
+        public bool HasFrameStack() { return framestack != null; }
 
-        /// <summary>
-        /// 在Frame于栈中的索引改变时调用
-        /// </summary>
         internal void SetSortingOrder(int newIndex)
         {
             //根节点交换位置不能改变层级必须通过SortingOrder
@@ -58,6 +55,11 @@ namespace Assets.Scripts.UIFramework
         {
             canvas = GetComponent<Canvas>();
             if (canvas.renderMode == RenderMode.ScreenSpaceCamera) canvas.worldCamera = uiCamera;
+        }
+
+        private void OnDestroy()
+        {
+            OnFocusChange = null;
         }
     }
 }

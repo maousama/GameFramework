@@ -11,7 +11,7 @@ namespace Assets.Scripts.UIFramework
         private List<Frame> list = new List<Frame>();
         private Dictionary<Frame, int> frameToIndex = new Dictionary<Frame, int>();
 
-        private int Count { get { return list.Count; } }
+        internal int Count { get { return list.Count; } }
         private int lastIndex { get { return Count - 1; } }
 
         internal Frame Pop()
@@ -20,8 +20,6 @@ namespace Assets.Scripts.UIFramework
             Frame frame = list[lastIndex];
             frameToIndex.Remove(list[lastIndex]);
             list.RemoveAt(lastIndex);
-            frame.OnRemoveFromTop();
-            list[lastIndex].OnSetToTop();
             return frame;
         }
         internal Frame Peek()
@@ -30,12 +28,9 @@ namespace Assets.Scripts.UIFramework
         }
         internal void Push(Frame frame)
         {
-            list[lastIndex].OnRemoveFromTop();
             frameToIndex.Add(frame, Count);
             list.Add(frame);
-            frame.OnSetToTop();
-            frame.SetSortingOrder(Count);
-
+            frame.SetSortingOrder(lastIndex);
         }
         internal bool Contains(Frame frame)
         {

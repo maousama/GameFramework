@@ -1,3 +1,10 @@
-﻿{
-	"name": "MutipleLang"
+{
+    "name": "MutipleLang",
+    "references": [
+        "AssetsManager"
+    ],
+    "optionalUnityReferences": [],
+    "includePlatforms": [],
+    "excludePlatforms": [],
+    "allowUnsafeCode": false
 }

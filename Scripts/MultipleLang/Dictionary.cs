@@ -1,8 +1,6 @@
-﻿using System;
+﻿using AssetsManager;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+using UnityEngine;
 
 namespace Assets.Scripts.MultipleLang
 {
@@ -16,6 +14,18 @@ namespace Assets.Scripts.MultipleLang
         {
             if (lang != Lang.English) return keyToString[key];
             else return key;
+        }
+
+        public void InitDictionary()
+        {
+            int curLang = PlayerPrefs.GetInt("Lang");
+
+            TextAsset textAsset = AssetsAgent.GetAsset<TextAsset>("Lang.json");
+            string content = textAsset.text;
+            Dictionary<string, object> locales = new Dictionary<string, object>();
+
+
+            
         }
     }
 }

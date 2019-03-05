@@ -6,6 +6,6 @@ namespace Assets.Scripts.UIFramework
     {
         Transform FrameContainer { get; }
         FrameStack FrameStack { get; }
-        bool IsFrameStackExist();
+        bool HasFrameStack();
     }
 }
