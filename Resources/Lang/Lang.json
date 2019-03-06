@@ -1,12 +1,16 @@
-{
-  "中文": 
+[
   {
     "Terrain Generator": "地形生成器",
-
     "New": "新建",
     "Continue": "继续",
     "Option": "设置",
     "Quit": "退出"
-
+  },
+  {
+    "Terrain Generator": "地形ジェネレータ",
+    "New": "新しい",
+    "Continue": "続ける",
+    "Option": "設定",
+    "Quit": "退出"
   }
-}
+]

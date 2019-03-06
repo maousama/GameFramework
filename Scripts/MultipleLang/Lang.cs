@@ -2,7 +2,8 @@
 {
     public enum Lang
     {
-        English,
-        中文,
+        English = -1,
+        中文 = 0,
+        日本語 = 1,
     }
 }

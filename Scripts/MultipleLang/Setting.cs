@@ -9,6 +9,7 @@ namespace Assets.Scripts.MultipleLang
             PlayerPrefs.SetInt("Lang", (int)lang);
             Dictionary.lang = lang;
             
+
         }
     }
 }
