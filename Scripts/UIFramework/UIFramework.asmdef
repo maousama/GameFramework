@@ -1,7 +1,6 @@
 {
     "name": "UIFramework",
     "references": [
-        "AssetsManager",
         "Core"
     ],
     "optionalUnityReferences": [],

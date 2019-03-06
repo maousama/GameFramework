@@ -1,8 +1,10 @@
 ﻿using UnityEngine;
+using UnityEngine.UI;
 
 public class MainMenuView : View
 {
     public Transform verticalLayoutGroup;
+    public Text[] texts;
 
     protected override void Awake()
     {
