@@ -2,6 +2,7 @@
 using System;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.UI;
 
 namespace Assets.Scripts.MultipleLang
 {
@@ -10,7 +11,7 @@ namespace Assets.Scripts.MultipleLang
     {
         private static Setting instance;
 
-        public Action OnLanguageChange;
+        internal Dictionary<Text, string> textToKey = new Dictionary<Text, string>();
 
         [SerializeField]
         internal Lang lang;
@@ -29,9 +30,10 @@ namespace Assets.Scripts.MultipleLang
         public void Set(Lang lang)
         {
             if (this.lang == lang) return;
+            //Language Change:
             this.lang = lang;
             UpdateDictionary();
-            OnLanguageChange();
+            foreach (Text text in textToKey.Keys) text.text = keyToString[textToKey[text]];
         }
 
         private void UpdateDictionary()
@@ -50,4 +52,5 @@ namespace Assets.Scripts.MultipleLang
             }
         }
     }
+
 }

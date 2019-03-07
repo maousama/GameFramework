@@ -3,16 +3,24 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using UnityEngine.UI;
 
 namespace Assets.Scripts.MultipleLang
 {
-    public class StringProvider
+    public static class StringProvider
     {
-        public static string Get(string key)
+
+        public static void Bind(this Text text, string key)
         {
             Setting setting = Setting.Instance;
-            if (setting.lang == Lang.English) return key;
-            return Setting.Instance.keyToString[key];
+            text.text = setting.keyToString[key];
+            setting.textToKey.Add(text, key);
+        }
+
+        public static void Unbind(this Text text)
+        {
+            text.text = string.Empty;
+            Setting.Instance.textToKey.Remove(text);
         }
     }
 }

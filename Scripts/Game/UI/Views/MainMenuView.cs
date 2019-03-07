@@ -1,14 +1,17 @@
-﻿using UnityEngine;
+﻿using Assets.Scripts.MultipleLang;
+using System.Collections.Generic;
+using UnityEngine;
 using UnityEngine.UI;
 
 public class MainMenuView : View
 {
     public Transform verticalLayoutGroup;
-    public Text[] texts;
+    public List<KeyValuePair<Text, string>> textToBindString;
 
     protected override void Awake()
     {
         base.Awake();
+        //foreach (KeyValuePair<Text, string> pair in textToBindString) pair.Key.Bind(pair.Value);
     }
 
     // Start is called before the first frame update
