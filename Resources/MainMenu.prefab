@@ -10,7 +10,7 @@ GameObject:
   m_Component:
   - component: {fileID: 224281705967709830}
   - component: {fileID: 114392477193634408}
-  m_Layer: 0
+  m_Layer: 5
   m_Name: VerticalLayoutGroup
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -37,8 +37,8 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 0}
   m_AnchorMax: {x: 0, y: 1}
-  m_AnchoredPosition: {x: 150, y: -50}
-  m_SizeDelta: {x: 300, y: -100}
+  m_AnchoredPosition: {x: 150, y: 0}
+  m_SizeDelta: {x: 300, y: -200}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &114392477193634408
 MonoBehaviour:
@@ -58,7 +58,7 @@ MonoBehaviour:
     m_Top: 0
     m_Bottom: 0
   m_ChildAlignment: 0
-  m_Spacing: 20
+  m_Spacing: 10
   m_ChildForceExpandWidth: 0
   m_ChildForceExpandHeight: 0
   m_ChildControlWidth: 0
@@ -74,7 +74,7 @@ GameObject:
   - component: {fileID: 224305587284612662}
   - component: {fileID: 222486462539595792}
   - component: {fileID: 114853895905252566}
-  m_Layer: 0
+  m_Layer: 5
   m_Name: Text
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -141,7 +141,7 @@ MonoBehaviour:
     m_HorizontalOverflow: 0
     m_VerticalOverflow: 0
     m_LineSpacing: 1
-  m_Text: Quit
+  m_Text: 
 --- !u!1 &1080870471463674
 GameObject:
   m_ObjectHideFlags: 0
@@ -153,7 +153,7 @@ GameObject:
   - component: {fileID: 224114783750518992}
   - component: {fileID: 222817416441038144}
   - component: {fileID: 114056009698604914}
-  m_Layer: 0
+  m_Layer: 5
   m_Name: Text
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -220,7 +220,7 @@ MonoBehaviour:
     m_HorizontalOverflow: 0
     m_VerticalOverflow: 0
     m_LineSpacing: 1
-  m_Text: Continue
+  m_Text: 
 --- !u!1 &1123669701785200
 GameObject:
   m_ObjectHideFlags: 0
@@ -231,7 +231,7 @@ GameObject:
   m_Component:
   - component: {fileID: 224851188160045110}
   - component: {fileID: 114402728050594180}
-  m_Layer: 0
+  m_Layer: 5
   m_Name: ComponentContainer
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -274,13 +274,11 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   defaultSelected: {fileID: 114743665232620930}
   frame: {fileID: 0}
-  verticalLayoutGroup: {fileID: 224281705967709830}
-  texts:
-  - {fileID: 114345033809972500}
-  - {fileID: 114056009698604914}
-  - {fileID: 114932367818357832}
-  - {fileID: 114853895905252566}
-  - {fileID: 114644811909299544}
+  tittleText: {fileID: 114644811909299544}
+  newText: {fileID: 114345033809972500}
+  continueText: {fileID: 114056009698604914}
+  optionText: {fileID: 114932367818357832}
+  quitText: {fileID: 114853895905252566}
 --- !u!1 &1448096392188752
 GameObject:
   m_ObjectHideFlags: 0
@@ -292,7 +290,7 @@ GameObject:
   - component: {fileID: 224371861136266234}
   - component: {fileID: 222459927218156928}
   - component: {fileID: 114932367818357832}
-  m_Layer: 0
+  m_Layer: 5
   m_Name: Text
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -359,7 +357,7 @@ MonoBehaviour:
     m_HorizontalOverflow: 0
     m_VerticalOverflow: 0
     m_LineSpacing: 1
-  m_Text: Option
+  m_Text: 
 --- !u!1 &1524699837310494
 GameObject:
   m_ObjectHideFlags: 0
@@ -372,8 +370,8 @@ GameObject:
   - component: {fileID: 222727288604339754}
   - component: {fileID: 114796047919245562}
   - component: {fileID: 114743665232620930}
-  m_Layer: 0
-  m_Name: StartButton
+  m_Layer: 5
+  m_Name: NewButton
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -475,7 +473,18 @@ MonoBehaviour:
   m_TargetGraphic: {fileID: 114796047919245562}
   m_OnClick:
     m_PersistentCalls:
-      m_Calls: []
+      m_Calls:
+      - m_Target: {fileID: 114402728050594180}
+        m_MethodName: NewButtonOnClick
+        m_Mode: 1
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
     m_TypeName: UnityEngine.UI.Button+ButtonClickedEvent, UnityEngine.UI, Version=1.0.0.0,
       Culture=neutral, PublicKeyToken=null
 --- !u!1 &1537548806812818
@@ -490,7 +499,7 @@ GameObject:
   - component: {fileID: 222154721385091118}
   - component: {fileID: 114216804776141750}
   - component: {fileID: 114828370513990428}
-  m_Layer: 0
+  m_Layer: 5
   m_Name: OptionButton
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -593,7 +602,18 @@ MonoBehaviour:
   m_TargetGraphic: {fileID: 114216804776141750}
   m_OnClick:
     m_PersistentCalls:
-      m_Calls: []
+      m_Calls:
+      - m_Target: {fileID: 114402728050594180}
+        m_MethodName: OptionButtonOnClick
+        m_Mode: 1
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
     m_TypeName: UnityEngine.UI.Button+ButtonClickedEvent, UnityEngine.UI, Version=1.0.0.0,
       Culture=neutral, PublicKeyToken=null
 --- !u!1 &1578814043616582
@@ -607,7 +627,7 @@ GameObject:
   - component: {fileID: 224286758516077560}
   - component: {fileID: 222922133527821686}
   - component: {fileID: 114644811909299544}
-  m_Layer: 0
+  m_Layer: 5
   m_Name: Tittle
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -674,7 +694,7 @@ MonoBehaviour:
     m_HorizontalOverflow: 0
     m_VerticalOverflow: 0
     m_LineSpacing: 1
-  m_Text: TERRAIN GENERATOR
+  m_Text: 
 --- !u!1 &1603427005276876
 GameObject:
   m_ObjectHideFlags: 0
@@ -687,8 +707,9 @@ GameObject:
   - component: {fileID: 223046570215356142}
   - component: {fileID: 114859591137090324}
   - component: {fileID: 114386942071899344}
+  - component: {fileID: 5038054968672332524}
   - component: {fileID: 114120995426139290}
-  m_Layer: 0
+  m_Layer: 5
   m_Name: MainMenu
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -775,6 +796,18 @@ MonoBehaviour:
   m_BlockingMask:
     serializedVersion: 2
     m_Bits: 4294967295
+--- !u!225 &5038054968672332524
+CanvasGroup:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1603427005276876}
+  m_Enabled: 1
+  m_Alpha: 1
+  m_Interactable: 1
+  m_BlocksRaycasts: 1
+  m_IgnoreParentGroups: 0
 --- !u!114 &114120995426139290
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -800,7 +833,7 @@ GameObject:
   - component: {fileID: 224830321984475766}
   - component: {fileID: 222148388350951636}
   - component: {fileID: 114345033809972500}
-  m_Layer: 0
+  m_Layer: 5
   m_Name: Text
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -867,7 +900,7 @@ MonoBehaviour:
     m_HorizontalOverflow: 0
     m_VerticalOverflow: 0
     m_LineSpacing: 1
-  m_Text: New Game
+  m_Text: 
 --- !u!1 &1893526532421710
 GameObject:
   m_ObjectHideFlags: 0
@@ -880,7 +913,7 @@ GameObject:
   - component: {fileID: 222669852024561372}
   - component: {fileID: 114198465463958382}
   - component: {fileID: 114266586669562922}
-  m_Layer: 0
+  m_Layer: 5
   m_Name: ContinueButton
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -983,7 +1016,18 @@ MonoBehaviour:
   m_TargetGraphic: {fileID: 114198465463958382}
   m_OnClick:
     m_PersistentCalls:
-      m_Calls: []
+      m_Calls:
+      - m_Target: {fileID: 114402728050594180}
+        m_MethodName: ContinueButtonOnClick
+        m_Mode: 1
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
     m_TypeName: UnityEngine.UI.Button+ButtonClickedEvent, UnityEngine.UI, Version=1.0.0.0,
       Culture=neutral, PublicKeyToken=null
 --- !u!1 &1933361687876682
@@ -998,7 +1042,7 @@ GameObject:
   - component: {fileID: 222720948414808332}
   - component: {fileID: 114914553024113604}
   - component: {fileID: 114790234580213704}
-  m_Layer: 0
+  m_Layer: 5
   m_Name: Panel
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -1111,7 +1155,7 @@ GameObject:
   - component: {fileID: 222305259625397830}
   - component: {fileID: 114204946041639388}
   - component: {fileID: 114389403094790574}
-  m_Layer: 0
+  m_Layer: 5
   m_Name: QuitButton
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -1214,6 +1258,17 @@ MonoBehaviour:
   m_TargetGraphic: {fileID: 114204946041639388}
   m_OnClick:
     m_PersistentCalls:
-      m_Calls: []
+      m_Calls:
+      - m_Target: {fileID: 114402728050594180}
+        m_MethodName: QuitButtonOnClick
+        m_Mode: 1
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
     m_TypeName: UnityEngine.UI.Button+ButtonClickedEvent, UnityEngine.UI, Version=1.0.0.0,
       Culture=neutral, PublicKeyToken=null

@@ -1,7 +1,5 @@
 ﻿using Assets.Scripts.UIFramework;
 using System;
-using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 /// <summary>
@@ -17,19 +15,18 @@ public class GameLoop : MonoBehaviour
         else
         {
             gameObject.name = "GameLoop";
-            Manager.Instance.OpenFrame("MainMenu");
         }
-
+        //SceneManager.LoadScene();
     }
+
     // Use this for initialization
     void Start()
     {
-
+        Frame mainMenu = Manager.Instance.OpenFrame("MainMenu");
     }
-
     // Update is called once per frame
     void Update()
     {
-
+        
     }
 }

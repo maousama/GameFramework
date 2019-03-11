@@ -1,17 +1,22 @@
 ﻿using Assets.Scripts.MultipleLang;
-using System.Collections.Generic;
+using Assets.Scripts.UIFramework;
 using UnityEngine;
+using UnityEngine.SceneManagement;
 using UnityEngine.UI;
 
 public class MainMenuView : View
 {
-    public Transform verticalLayoutGroup;
-    public List<KeyValuePair<Text, string>> textToBindString;
+    public Text tittleText, newText, continueText, optionText, quitText;
 
     protected override void Awake()
     {
         base.Awake();
-        //foreach (KeyValuePair<Text, string> pair in textToBindString) pair.Key.Bind(pair.Value);
+
+        tittleText.Bind("Terrain Generator");
+        newText.Bind("New");
+        continueText.Bind("Continue");
+        optionText.Bind("Option");
+        quitText.Bind("Quit");
     }
 
     // Start is called before the first frame update
@@ -25,10 +30,25 @@ public class MainMenuView : View
     {
     }
 
-    public void NewGameButtonOnClick()
+    protected override void OnDestroy()
     {
+        base.OnDestroy();
 
+        tittleText.Unbind();
+        newText.Unbind();
+        continueText.Unbind();
+        optionText.Unbind();
+        quitText.Unbind();
     }
+
+    public void NewButtonOnClick()
+    {
+        AsyncOperation asyncOperation = SceneManager.LoadSceneAsync(1);
+        Manager.Instance.CloseFrame(frame);
+        asyncOperation.allowSceneActivation = true;
+        asyncOperation.completed += delegate (AsyncOperation async) { Manager.Instance.OpenFrame("LoadingView"); };
+    }
+
     public void ContinueButtonOnClick()
     {
 

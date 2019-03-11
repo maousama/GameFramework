@@ -12,12 +12,13 @@ public class MenuItems : MonoBehaviour
         Canvas canvas = go.AddComponent<Canvas>();
         go.AddComponent<CanvasScaler>();
         go.AddComponent<GraphicRaycaster>();
+        go.AddComponent<CanvasGroup>();
         go.AddComponent<Frame>();
         canvas.renderMode = RenderMode.ScreenSpaceCamera;
         GameObject componentContainer = new GameObject("ComponentContainer", typeof(RectTransform));
         componentContainer.transform.SetParent(go.transform);
         RectTransform containerRectTr = componentContainer.GetComponent<RectTransform>();
-        
+
         containerRectTr.anchorMin = Vector2.zero;
         containerRectTr.anchorMax = new Vector2(1, 1);
         containerRectTr.offsetMin = Vector2.zero;

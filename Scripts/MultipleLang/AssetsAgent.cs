@@ -3,9 +3,13 @@ namespace Assets.Scripts.MultipleLang
 {
     internal class AssetsAgent
     {
-        internal static T GetAsset<T>(string name) where T : UnityEngine.Object
+        internal static T GetAsset<T>(string name) where T : Object
         {
             return Resources.Load<T>(name);
+        }
+        internal static void ReleaseAsset<T>(T asset) where T : Object
+        {
+            Resources.UnloadAsset(asset);
         }
         internal static GameObject GetGameObject(string name)
         {

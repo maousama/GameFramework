@@ -4,7 +4,7 @@ using System;
 public abstract class Singleton<T> where T : Singleton<T>
 {
     private static T instance;
-    public static T Instance
+    protected static T Instance
     {
         get
         {

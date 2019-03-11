@@ -24,7 +24,8 @@ namespace Assets.Scripts.UIFramework
         }
         internal Frame Peek()
         {
-            return list[lastIndex];
+            if (lastIndex >= 0) return list[lastIndex];
+            else return null;
         }
         internal void Push(Frame frame)
         {

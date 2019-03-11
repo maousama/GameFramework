@@ -1,4 +1,6 @@
-﻿using UnityEngine;
+﻿using System;
+using UnityEngine;
+using UnityEngine.EventSystems;
 
 namespace Assets.Scripts.UIFramework
 {
@@ -30,7 +32,7 @@ namespace Assets.Scripts.UIFramework
             }
         }
 
-        public void OpenFrame(string frameName, IFrameNode parentNode)
+        public Frame OpenFrame(string frameName, IFrameNode parentNode)
         {
             GameObject instance = AssetsAgent.GetGameObject(frameName, parentNode.FrameContainer);
             Frame frame = instance.GetComponent<Frame>();
@@ -38,10 +40,12 @@ namespace Assets.Scripts.UIFramework
             frame.parentNode = parentNode;
 
             CurrentFocusFrame = frame;
+
+            return frame;
         }
-        public void OpenFrame(string frameName)
+        public Frame OpenFrame(string frameName)
         {
-            OpenFrame(frameName, this);
+            return OpenFrame(frameName, this);
         }
         public void CloseFrame(Frame frame)
         {
@@ -77,10 +81,17 @@ namespace Assets.Scripts.UIFramework
         protected override void Init()
         {
             base.Init();
-            gameObject.hideFlags = HideFlags.NotEditable;
             InitFrameUICamera();
+            InitEventSystem();
             DontDestroyOnLoad(gameObject);
         }
+
+        private void InitEventSystem()
+        {
+            gameObject.AddComponent<EventSystem>();
+            gameObject.AddComponent<StandaloneInputModule>();
+        }
+
         private void InitFrameUICamera()
         {
             Camera uiCamera = gameObject.AddComponent<Camera>();

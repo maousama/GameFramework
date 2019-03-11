@@ -1,9 +1,7 @@
 ﻿using Newtonsoft.Json;
-using System;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
-
 namespace Assets.Scripts.MultipleLang
 {
     [CreateAssetMenu(fileName = "LangSetting", menuName = "ScriptableObject/LangSetting")]
@@ -12,36 +10,52 @@ namespace Assets.Scripts.MultipleLang
         private static Setting instance;
 
         internal Dictionary<Text, string> textToKey = new Dictionary<Text, string>();
-
-        [SerializeField]
-        internal Lang lang;
-
         internal Dictionary<string, string> keyToString;
+        [SerializeField, ShowProperty]
+        private Lang lang;
 
         public static Setting Instance
         {
             get
             {
-                if (!instance) instance = AssetsAgent.GetAsset<Setting>("LangSetting");
+                if (!instance) instance = AssetsAgent.GetAsset<Setting>("Setting/LangSetting");
                 return instance;
             }
         }
 
-        public void Set(Lang lang)
+        public Lang Lang
         {
-            if (this.lang == lang) return;
-            //Language Change:
-            this.lang = lang;
-            UpdateDictionary();
-            foreach (Text text in textToKey.Keys) text.text = keyToString[textToKey[text]];
+            get { return lang; }
+            set
+            {
+                if (lang == value) return;
+                lang = value;
+                UpdateDictionary();
+                if (lang == Lang.English) foreach (Text text in textToKey.Keys) text.text = textToKey[text];
+                else foreach (Text text in textToKey.Keys) text.text = keyToString[textToKey[text]];
+            }
         }
+        private void Awake()
+        {
+            Debug.Log("Language setting created.");
+            UpdateDictionary();
+        }
+
+#if UNITY_EDITOR
+        [RuntimeInitializeOnLoadMethod(RuntimeInitializeLoadType.BeforeSceneLoad)]
+        public static void EditorAwake()
+        {
+            Instance.Awake();
+        }
+#endif
 
         private void UpdateDictionary()
         {
-            int langInt = (int)lang;
-            if (lang == Lang.English)
+            Debug.Log("Update Dictionary");
+            int langInt = (int)Lang;
+            if (Lang == Lang.English)
             {
-                keyToString.Clear();
+                keyToString = null;
             }
             else
             {
@@ -49,8 +63,8 @@ namespace Assets.Scripts.MultipleLang
                 string content = textAsset.text;
                 Dictionary<string, string>[] allData = JsonConvert.DeserializeObject<Dictionary<string, string>[]>(content);
                 keyToString = allData[langInt];
+                AssetsAgent.ReleaseAsset(textAsset);
             }
         }
     }
-
 }

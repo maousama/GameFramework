@@ -7,7 +7,9 @@ namespace Assets.Scripts.UIFramework
     public sealed class Frame : MonoBehaviour, IFrameNode
     {
         internal static Camera uiCamera;
-
+        /// <summary>
+        /// invoke when top of all stacks change,
+        /// </summary>
         public Action<bool> OnFocusChange;
 
         internal IFrameNode parentNode;
@@ -30,7 +32,7 @@ namespace Assets.Scripts.UIFramework
         {
             get
             {
-                if (!frameContainer) frameContainer = new GameObject("TrameContainer").transform;
+                if (!frameContainer) frameContainer = new GameObject("FrameContainer").transform;
                 return frameContainer;
             }
         }
@@ -54,7 +56,7 @@ namespace Assets.Scripts.UIFramework
         private void Awake()
         {
             canvas = GetComponent<Canvas>();
-            if (canvas.renderMode == RenderMode.ScreenSpaceCamera) canvas.worldCamera = uiCamera;
+            canvas.worldCamera = uiCamera;
         }
 
         private void OnDestroy()

@@ -1,6 +1,8 @@
 {
     "name": "MutipleLang",
-    "references": [],
+    "references": [
+        "Attributes"
+    ],
     "optionalUnityReferences": [],
     "includePlatforms": [],
     "excludePlatforms": [],
