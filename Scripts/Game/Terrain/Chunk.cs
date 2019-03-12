@@ -9,5 +9,27 @@ namespace Assets.Scripts.Game.Terrain
 {
     public class Chunk : MonoBehaviour
     {
+        public static int sideLength = 64;
+
+        private Vector2Int index;
+
+        public void Initialize(Vector2Int index)
+        {
+            this.index = index;
+            transform.position = new Vector3(index.x * sideLength, 0, index.y * sideLength);
+
+            Block[,] blocks = new Block[sideLength, sideLength];
+            for (int z = 0; z < sideLength; z++)
+            {
+                for (int x = 0; x < sideLength; x++)
+                {
+                    Block block = new GameObject("Block", typeof(Block)).GetComponent<Block>();
+                    block.Initialize(new Vector2Int(x, z));
+                    blocks[x, z] = block;
+                }
+            }
+        }
+
+
     }
 }

@@ -3,7 +3,7 @@ namespace Assets.Scripts.Game.Terrain
 {
     public class PerlinNoise
     {
-        private int[][] unitGradients = new int[][]
+        private static int[][] unitGradients = new int[][]
         {
         new int[]{ 1,2},
         new int[]{ 1,-2},
@@ -15,13 +15,13 @@ namespace Assets.Scripts.Game.Terrain
         new int[]{ -2,-1},
         };
 
-        private float Lerp(float a, float b, float t)
+        private static float Lerp(float a, float b, float t)
         {
             t = t * t * t * (6 * t * t - 15 * t + 10);
             return a + (b - a) * t;
         }
 
-        private float DotGridGrandient(int ix, int iy, float x, float y)
+        private static float DotGridGrandient(int ix, int iy, float x, float y)
         {
             float dx = x - ix;
             float dy = y - iy;
@@ -30,7 +30,7 @@ namespace Assets.Scripts.Game.Terrain
             return dx * gradient[0] + dy * gradient[1];
         }
 
-        private int[] GetGradient(int ix, int iy)
+        private static int[] GetGradient(int ix, int iy)
         {
             int randomNum = (MapGenerator.seed * iy + ix * (iy * ix * 60493 - MapGenerator.seed + 19990303) - (353 * MapGenerator.seed) + 1376312589 - 233 * iy) & 0x7fffffff;
             int index = randomNum % 8;
@@ -39,7 +39,7 @@ namespace Assets.Scripts.Game.Terrain
             return unitGradients[index];
         }
 
-        private float Perlin(float x, float y)
+        private static float Perlin(float x, float y)
         {
             // Determine grid cell coordinates
             int x0 = (int)x;
@@ -63,7 +63,7 @@ namespace Assets.Scripts.Game.Terrain
             return value;
         }
 
-        public float SuperimposedOctave(float x, float y, int superposition = 1)
+        public static float SuperimposedOctave(float x, float y, int superposition = 1)
         {
             float result = 0;
             superposition = superposition < 0 ? 0 : superposition;

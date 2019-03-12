@@ -7,6 +7,8 @@ namespace Assets.Scripts.Game.Terrain
     /// </summary>
     public class HeightMap
     {
+        private float heightMutiple = 64;
+
         private Dictionary<Vector2Int, int> coordinateHeightMap = new Dictionary<Vector2Int, int>();
 
         public int GetHeight(Vector2Int coordinate)
@@ -14,9 +16,13 @@ namespace Assets.Scripts.Game.Terrain
             if (coordinateHeightMap.ContainsKey(coordinate)) return coordinateHeightMap[coordinate];
             else
             {
-                
+                int height = (int)(PerlinNoise.SuperimposedOctave(coordinate.x, coordinate.y, 6) * heightMutiple);
+                coordinateHeightMap.Add(coordinate, height);
+                return height;
             }
         }
+
+        public int release
     }
 }
 

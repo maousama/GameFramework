@@ -4,6 +4,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using UnityEngine;
 
 namespace Assets.Scripts.Game.Terrain
 {
@@ -12,10 +13,7 @@ namespace Assets.Scripts.Game.Terrain
     {
         public static int seed = 0;
 
-        private void CreateOneChunk()
-        {
-
-        }
+        
 
         //chunk = 256*256*128 block
         //choose map size
