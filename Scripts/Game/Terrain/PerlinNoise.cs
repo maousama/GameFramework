@@ -3,8 +3,6 @@ namespace Assets.Scripts.Game.Terrain
 {
     public class PerlinNoise
     {
-        private int seed = 0;
-
         private int[][] unitGradients = new int[][]
         {
         new int[]{ 1,2},
@@ -16,8 +14,6 @@ namespace Assets.Scripts.Game.Terrain
         new int[]{ -2,1},
         new int[]{ -2,-1},
         };
-
-        public int Seed { get => seed; set => seed = value; }
 
         private float Lerp(float a, float b, float t)
         {
@@ -36,7 +32,7 @@ namespace Assets.Scripts.Game.Terrain
 
         private int[] GetGradient(int ix, int iy)
         {
-            int randomNum = (Seed * iy + ix * (iy * ix * 60493 - Seed + 19990303) - (353 * Seed) + 1376312589 - 233 * iy) & 0x7fffffff;
+            int randomNum = (MapGenerator.seed * iy + ix * (iy * ix * 60493 - MapGenerator.seed + 19990303) - (353 * MapGenerator.seed) + 1376312589 - 233 * iy) & 0x7fffffff;
             int index = randomNum % 8;
 
             index = index < 0 ? index + 8 : index;

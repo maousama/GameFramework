@@ -10,10 +10,11 @@ namespace Assets.Scripts.Game.Terrain
 
     public class MapGenerator : MonoSingleton<MapGenerator>
     {
+        public static int seed = 0;
 
         private void CreateOneChunk()
         {
-            
+
         }
 
         //chunk = 256*256*128 block
@@ -37,10 +38,32 @@ namespace Assets.Scripts.Game.Terrain
 
     public class GenerateMapOperation : IOperation
     {
-        public bool IsDone => throw new NotImplementedException();
+        public bool IsDone
+        {
+            get
+            {
+                throw new NotImplementedException();
+            }
+        }
 
-        public float Progress => throw new NotImplementedException();
+        public float Progress
+        {
+            get
+            {
+                throw new NotImplementedException();
+            }
+        }
 
-        public Action Completed { get => throw new NotImplementedException(); set => throw new NotImplementedException(); }
+        public Action Completed
+        {
+            get
+            {
+                throw new NotImplementedException();
+            }
+            set
+            {
+
+            }
+        }
     }
 }
