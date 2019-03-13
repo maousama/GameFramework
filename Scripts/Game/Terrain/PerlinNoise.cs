@@ -27,6 +27,7 @@ namespace Assets.Scripts.Game.Terrain
             float dy = y - iy;
 
             int[] gradient = GetGradient(ix, iy);
+            //Debug.Log(dx + "|" + dy + "{}{}" + (dx * gradient[0] + dy * gradient[1]));
             return dx * gradient[0] + dy * gradient[1];
         }
 
@@ -42,9 +43,9 @@ namespace Assets.Scripts.Game.Terrain
         private static float Perlin(float x, float y)
         {
             // Determine grid cell coordinates
-            int x0 = (int)x;
+            int x0 = Mathf.FloorToInt(x);
             int x1 = x0 + 1;
-            int y0 = (int)y;
+            int y0 = Mathf.FloorToInt(y);
             int y1 = y0 + 1;
             // Determine interpolation weights
             // Could also use higher order polynomial/s-curve here

@@ -9,28 +9,55 @@ namespace Assets.Scripts.Game.Terrain
 {
     public class Chunk : MonoBehaviour
     {
-        public static int sideLength = 64;
+        public static int halfSideLength = 32;
+        public static int heightMagnification = 10;
+        public static int SideLength { get { return halfSideLength * 2; } }
 
         private Vector2Int index;
 
         public void Initialize(Vector2Int index)
         {
             this.index = index;
-            transform.position = new Vector3(index.x * sideLength, 0, index.y * sideLength);
+            transform.position = new Vector3(index.x * SideLength, 0, index.y * SideLength);
 
-            Block[,] blocks = new Block[sideLength, sideLength];
-            for (int z = 0; z < sideLength; z++)
+            CreateHeightMap();
+
+            Block[,] blocks = new Block[SideLength, SideLength];
+            for (int z = 0; z < SideLength; z++)
             {
-                for (int x = 0; x < sideLength; x++)
+                for (int x = 0; x < SideLength; x++)
                 {
                     Block block = new GameObject("Block", typeof(Block)).GetComponent<Block>();
                     block.Initialize(this, new Vector2Int(x, z));
                     blocks[x, z] = block;
                 }
             }
+            
         }
 
-        public Dictionary<Vector2Int, int> heightMap = new Dictionary<Vector2Int, int>(sideLength++1));
-
+        /// <summary>
+        /// Temporary real position to height
+        /// </summary>
+        private Dictionary<Vector2Int, int> tempHeightMap;
+        private void CreateHeightMap()
+        {
+            tempHeightMap = new Dictionary<Vector2Int, int>((SideLength + 1) * (SideLength + 1));
+            int ix = (int)transform.position.x;
+            int iz = (int)transform.position.z;
+            for (int x = ix - halfSideLength; x <= ix + halfSideLength; x++)
+            {
+                for (int z = iz - halfSideLength; z <= iz + halfSideLength; z++)
+                {
+                    Vector2Int key = new Vector2Int(x, z);
+                    float height = PerlinNoise.SuperimposedOctave(0.03f * key.x, 0.03f * key.y, 3);
+                    int iHeight = Mathf.RoundToInt(height * 10f);
+                    tempHeightMap.Add(key, iHeight);
+                }
+            }
+        }
+        public int GetHeight(Vector2Int iPos)
+        {
+            return tempHeightMap[iPos];
+        }
     }
 }

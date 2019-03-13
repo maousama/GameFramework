@@ -7,6 +7,7 @@ using UnityEngine;
 
 namespace Assets.Scripts.Game.Terrain
 {
+
     public class Block : MonoBehaviour
     {
         private Chunk chunk;
@@ -19,8 +20,14 @@ namespace Assets.Scripts.Game.Terrain
             this.chunk = chunk;
             this.index = index;
             transform.parent = chunk.transform;
-            transform.localPosition = new Vector3(index.x + (0.5f - Chunk.sideLength * 0.5f), 0, index.y + (0.5f - Chunk.sideLength * 0.5f));
+            transform.localPosition = new Vector3(index.x + (0.5f - Chunk.SideLength * 0.5f), 0, index.y + (0.5f - Chunk.SideLength * 0.5f));
+            gameObject.AddComponent<MeshFilter>();
+            gameObject.AddComponent<MeshRenderer>();
+        }
+        public void CreateMesh()
+        {
 
         }
+
     }
 }
