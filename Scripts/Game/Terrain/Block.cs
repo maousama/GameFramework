@@ -14,10 +14,13 @@ namespace Assets.Scripts.Game.Terrain
         private Vector2Int index;
         private Vector2Int position;
 
-        public void Initialize(Vector2Int index)
+        public void Initialize(Chunk chunk, Vector2Int index)
         {
+            this.chunk = chunk;
             this.index = index;
+            transform.parent = chunk.transform;
             transform.localPosition = new Vector3(index.x + (0.5f - Chunk.sideLength * 0.5f), 0, index.y + (0.5f - Chunk.sideLength * 0.5f));
+
         }
     }
 }

@@ -13,7 +13,11 @@ namespace Assets.Scripts.Game.Terrain
     {
         public static int seed = 0;
 
-        
+        private void Start()
+        {
+            Chunk chunk = new GameObject("Chunk", typeof(Chunk)).GetComponent<Chunk>();
+            chunk.Initialize(Vector2Int.zero);
+        }
 
         //chunk = 256*256*128 block
         //choose map size

@@ -24,12 +24,13 @@ namespace Assets.Scripts.Game.Terrain
                 for (int x = 0; x < sideLength; x++)
                 {
                     Block block = new GameObject("Block", typeof(Block)).GetComponent<Block>();
-                    block.Initialize(new Vector2Int(x, z));
+                    block.Initialize(this, new Vector2Int(x, z));
                     blocks[x, z] = block;
                 }
             }
         }
 
+        public Dictionary<Vector2Int, int> heightMap = new Dictionary<Vector2Int, int>(sideLength++1));
 
     }
 }
