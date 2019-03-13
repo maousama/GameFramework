@@ -22,7 +22,6 @@ namespace Assets.Scripts.Game.Terrain
             }
         }
 
-        public int release
     }
 }
 
