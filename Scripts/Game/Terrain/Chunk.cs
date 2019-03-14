@@ -32,16 +32,17 @@ namespace Assets.Scripts.Game.Terrain
                     blocks[x, z] = block;
                 }
             }
-            
+
         }
+
 
         /// <summary>
         /// Temporary real position to height
         /// </summary>
-        private Dictionary<Vector2Int, int> tempHeightMap;
+        private Dictionary<Vector2Int, int> heightMap;
         private void CreateHeightMap()
         {
-            tempHeightMap = new Dictionary<Vector2Int, int>((SideLength + 1) * (SideLength + 1));
+            heightMap = new Dictionary<Vector2Int, int>((SideLength + 1) * (SideLength + 1));
             int ix = (int)transform.position.x;
             int iz = (int)transform.position.z;
             for (int x = ix - halfSideLength; x <= ix + halfSideLength; x++)
@@ -51,13 +52,13 @@ namespace Assets.Scripts.Game.Terrain
                     Vector2Int key = new Vector2Int(x, z);
                     float height = PerlinNoise.SuperimposedOctave(0.03f * key.x, 0.03f * key.y, 3);
                     int iHeight = Mathf.RoundToInt(height * 10f);
-                    tempHeightMap.Add(key, iHeight);
+                    heightMap.Add(key, iHeight);
                 }
             }
         }
-        public int GetHeight(Vector2Int iPos)
+        public int GetHeight(Vector2Int vector2Int)
         {
-            return tempHeightMap[iPos];
+            return heightMap[vector2Int];
         }
     }
 }
