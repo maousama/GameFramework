@@ -9,7 +9,7 @@ namespace Assets.Scripts.Game.Terrain
 {
     public class Chunk : MonoBehaviour
     {
-        public static int halfSideLength = 32;
+        public static int halfSideLength = 64;
         public static int heightMagnification = 10;
         public static int SideLength { get { return halfSideLength * 2; } }
 
@@ -50,7 +50,7 @@ namespace Assets.Scripts.Game.Terrain
                 for (int z = iz - halfSideLength; z <= iz + halfSideLength; z++)
                 {
                     Vector2Int key = new Vector2Int(x, z);
-                    float height = PerlinNoise.SuperimposedOctave(0.03f * key.x, 0.03f * key.y, 3);
+                    float height = PerlinNoise.SuperimposedOctave(0.007f * key.x, 0.007f * key.y, 5);
                     int iHeight = Mathf.RoundToInt(height * 10f);
                     heightMap.Add(key, iHeight);
                 }

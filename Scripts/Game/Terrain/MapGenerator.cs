@@ -15,8 +15,14 @@ namespace Assets.Scripts.Game.Terrain
 
         private void Start()
         {
-            Chunk chunk = new GameObject("Chunk", typeof(Chunk)).GetComponent<Chunk>();
-            chunk.Initialize(Vector2Int.zero);
+            for (int z = 0; z < 3; z++)
+            {
+                for (int x = 0; x < 3; x++)
+                {
+                    Chunk chunk = new GameObject("Chunk", typeof(Chunk)).GetComponent<Chunk>();
+                    chunk.Initialize(new Vector2Int(x, z));
+                }
+            }
         }
 
         //chunk = 256*256*128 block

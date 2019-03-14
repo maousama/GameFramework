@@ -1,4 +1,5 @@
-﻿using System;
+﻿using AssetsManager;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -22,10 +23,12 @@ namespace Assets.Scripts.Game.Terrain
             transform.localPosition = new Vector3(index.x + (0.5f - Chunk.halfSideLength), 0, index.y + (0.5f - Chunk.halfSideLength));
 
             MeshFilter meshFilter = gameObject.AddComponent<MeshFilter>();
-            gameObject.AddComponent<MeshRenderer>();
+            MeshRenderer meshRenderer = gameObject.AddComponent<MeshRenderer>();
 
+            meshRenderer.materials = new Material[] { AssetsAgent.GetAsset<Material>("BlockMaterial") };
             meshFilter.mesh = new Mesh();
             meshFilter.mesh.name = "Block Mesh";
+
 
             int floorx = Mathf.FloorToInt(transform.position.x);
             int ceilx = Mathf.CeilToInt(transform.position.x);
@@ -39,6 +42,7 @@ namespace Assets.Scripts.Game.Terrain
             int[] traingles = new int[6] { 0, 1, 2, 2, 3, 0 };
             meshFilter.mesh.vertices = vertices;
             meshFilter.mesh.triangles = traingles;
+
 
             meshFilter.mesh.RecalculateNormals();
         }
