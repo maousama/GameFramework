@@ -11,12 +11,44 @@ namespace Assets.Scripts.Game.Terrain
 
     public class Block : MonoBehaviour
     {
-        private Chunk chunk;
+        /// <summary>
+        /// 由地块xz坐标决定的基本温度
+        /// </summary>
+        private float baseTemperature;
+        /// <summary>
+        /// 降水量百分比
+        /// </summary>
+        private float precipitationPercentage;
+        /// <summary>
+        /// 高度:取四个点的平均值
+        /// </summary>
+        private float height;
+        /// <summary>
+        /// 温度:由海拔和基本温度决定
+        /// </summary>
+        private float temperature;
+        /// <summary>
+        /// 降水量:由百分比于最大降水量共同决定真实降水量
+        /// </summary>
+        private float precipitation;
+        /// <summary>
+        /// 生物群落类型
+        /// </summary>
+        private BiomeType biomeType;
 
+
+
+        private Chunk chunk;
         private Vector2Int index;
+
+        private void AffectTemperatureByAltitude()
+        {
+
+        }
 
         public void Initialize(Chunk chunk, Vector2Int index)
         {
+            //Set gameObject
             this.chunk = chunk;
             this.index = index;
             transform.parent = chunk.transform;
@@ -29,7 +61,7 @@ namespace Assets.Scripts.Game.Terrain
             meshFilter.mesh = new Mesh();
             meshFilter.mesh.name = "Block Mesh";
 
-
+            //Set traingles and vertices
             int floorx = Mathf.FloorToInt(transform.position.x);
             int ceilx = Mathf.CeilToInt(transform.position.x);
             int floorz = Mathf.FloorToInt(transform.position.z);
@@ -42,10 +74,20 @@ namespace Assets.Scripts.Game.Terrain
             int[] traingles = new int[6] { 0, 1, 2, 2, 3, 0 };
             meshFilter.mesh.vertices = vertices;
             meshFilter.mesh.triangles = traingles;
-
-
             meshFilter.mesh.RecalculateNormals();
+
+            //Set height
+            float allHeight = 0;
+            for (int i = 0; i < vertices.Length; i++) allHeight += vertices[i].y;
+            height = allHeight * 0.25f;
+
+            //Set temperature and precipitation
+            baseTemperature = PerlinNoise.SuperimposedOctave(transform.position.x, transform.position.z);
+            precipitationPercentage = 
+
         }
+
+
 
     }
 }

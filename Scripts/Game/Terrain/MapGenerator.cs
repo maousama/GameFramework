@@ -11,7 +11,7 @@ namespace Assets.Scripts.Game.Terrain
 
     public class MapGenerator : MonoSingleton<MapGenerator>
     {
-        public static int seed = 0;
+        public static int seed = 154;
 
         private void Start()
         {

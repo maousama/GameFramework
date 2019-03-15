@@ -9,9 +9,11 @@ namespace Assets.Scripts.Game.Terrain
 {
     public class Chunk : MonoBehaviour
     {
-        public static int halfSideLength = 64;
+        public static int halfSideLength = 32;
         public static int heightMagnification = 10;
         public static int SideLength { get { return halfSideLength * 2; } }
+
+        public float min, max;
 
         private Vector2Int index;
 
@@ -39,10 +41,10 @@ namespace Assets.Scripts.Game.Terrain
         /// <summary>
         /// Temporary real position to height
         /// </summary>
-        private Dictionary<Vector2Int, int> heightMap;
+        private Dictionary<Vector2Int, float> heightMap;
         private void CreateHeightMap()
         {
-            heightMap = new Dictionary<Vector2Int, int>((SideLength + 1) * (SideLength + 1));
+            heightMap = new Dictionary<Vector2Int, float>((SideLength + 1) * (SideLength + 1));
             int ix = (int)transform.position.x;
             int iz = (int)transform.position.z;
             for (int x = ix - halfSideLength; x <= ix + halfSideLength; x++)
@@ -50,13 +52,12 @@ namespace Assets.Scripts.Game.Terrain
                 for (int z = iz - halfSideLength; z <= iz + halfSideLength; z++)
                 {
                     Vector2Int key = new Vector2Int(x, z);
-                    float height = PerlinNoise.SuperimposedOctave(0.007f * key.x, 0.007f * key.y, 5);
-                    int iHeight = Mathf.RoundToInt(height * 10f);
-                    heightMap.Add(key, iHeight);
+                    float height = PerlinNoise.SuperimposedOctave(0.003f * key.x, 0.003f * key.y, 6) * 20;
+                    heightMap.Add(key, height);
                 }
             }
         }
-        public int GetHeight(Vector2Int vector2Int)
+        public float GetHeight(Vector2Int vector2Int)
         {
             return heightMap[vector2Int];
         }
