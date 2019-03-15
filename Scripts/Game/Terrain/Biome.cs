@@ -3,13 +3,13 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using UnityEngine;
 
 namespace Assets.Scripts.Game.Terrain
 {
     public class Biome
     {
-
-        public BiomeType BiomeSelector(float temperature, float precipitationPercentage)
+        public static BiomeType BiomeSelector(float temperature, float precipitationPercentage)
         {
             if (temperature < 25)
             {
@@ -40,6 +40,42 @@ namespace Assets.Scripts.Game.Terrain
                 else return BiomeType.TropicalRainforest;
             }
         }
+
+        public static Color GetColor(BiomeType biome)
+        {
+            switch (biome)
+            {
+                case BiomeType.IceDesert:
+                    return new Color(0.7f, 1, 1);
+                case BiomeType.ColdDesert:
+                    return Color.white;
+                case BiomeType.Tundra:
+                    return new Color(0.25f, 0.5f, 0.25f);
+                case BiomeType.TemperateDesert:
+                    return new Color(0.5f, 0.25f, 0.25f);
+                case BiomeType.TemperateGrassland:
+                    return new Color(0.5f, 0.5f, 0.25f);
+                case BiomeType.SubtropicalDesert:
+                    return new Color(0.5f, 0.25f, 0);
+                case BiomeType.BorealForest:
+                    return new Color(0.4f, 0.25f, 0.25f);
+                case BiomeType.Shrubland:
+                    return new Color(0.7f, 0.5f, 0.3f);
+                case BiomeType.Woodland:
+                    return new Color(0.6f, 0.5f, 0.3f);
+                case BiomeType.TemperateSeasonalForest:
+                    return new Color(0.7f, 0.5f, 0.3f);
+                case BiomeType.TemperateRainforest:
+                    return new Color(0.25f, 0.4f, 0.25f);
+                case BiomeType.TropicalRainforest:
+                    return new Color(0.4f, 0.3f, 0.2f);
+                case BiomeType.TropicalSeasonalForest:
+                    return new Color(0.6f, 0.6f, 0.35f);
+                default:
+                    return Color.black;
+            }
+        }
+
     }
     public enum BiomeType
     {

@@ -21,26 +21,26 @@ namespace Assets.Scripts.Game.Terrain
             return a + (b - a) * t;
         }
 
-        private static float DotGridGrandient(int ix, int iy, float x, float y)
+        private static float DotGridGrandient(int ix, int iy, float x, float y, int seed)
         {
             float dx = x - ix;
             float dy = y - iy;
 
-            int[] gradient = GetGradient(ix, iy);
+            int[] gradient = GetGradient(ix, iy, seed);
             //Debug.Log(dx + "|" + dy + "{}{}" + (dx * gradient[0] + dy * gradient[1]));
             return dx * gradient[0] + dy * gradient[1];
         }
 
-        private static int[] GetGradient(int ix, int iy)
+        private static int[] GetGradient(int ix, int iy, int seed)
         {
-            int randomNum = (MapGenerator.seed * iy + ix * (iy * ix * 60493 - MapGenerator.seed + 19990303) - (353 * MapGenerator.seed) + 1376312589 - 233 * iy) & 0x7fffffff;
+            int randomNum = (seed * iy + ix * (iy * ix * 60493 - seed + 19990303) - (353 * seed) + 1376312589 - 233 * iy) & 0x7fffffff;
             int index = randomNum % 8;
 
             index = index < 0 ? index + 8 : index;
             return unitGradients[index];
         }
 
-        private static float Perlin(float x, float y)
+        private static float Perlin(float x, float y, int seed)
         {
             // Determine grid cell coordinates
             int x0 = Mathf.FloorToInt(x);
@@ -53,25 +53,25 @@ namespace Assets.Scripts.Game.Terrain
             float sy = y - y0;
             // Interpolate between grid point gradients
             float n0, n1, ix0, ix1, value;
-            n0 = DotGridGrandient(x0, y0, x, y);
-            n1 = DotGridGrandient(x1, y0, x, y);
+            n0 = DotGridGrandient(x0, y0, x, y, seed);
+            n1 = DotGridGrandient(x1, y0, x, y, seed);
             ix0 = Lerp(n0, n1, sx);
-            n0 = DotGridGrandient(x0, y1, x, y);
-            n1 = DotGridGrandient(x1, y1, x, y);
+            n0 = DotGridGrandient(x0, y1, x, y, seed);
+            n1 = DotGridGrandient(x1, y1, x, y, seed);
             ix1 = Lerp(n0, n1, sx);
             value = Lerp(ix0, ix1, sy);
 
             return value;
         }
 
-        public static float SuperimposedOctave(float x, float y, int superposition = 1)
+        public static float SuperimposedOctave(int seed, float x, float y, int superposition = 1)
         {
             float result = 0;
             superposition = superposition < 0 ? 0 : superposition;
             for (int i = 0; i < superposition; i++)
             {
                 float nIthPower = Mathf.Pow(2, i);
-                result += Perlin(nIthPower * x, nIthPower * y) * Mathf.Pow(0.5f, i);
+                result += Perlin(nIthPower * x, nIthPower * y, seed) * Mathf.Pow(0.5f, i);
             }
             return result;
         }

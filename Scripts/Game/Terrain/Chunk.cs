@@ -52,7 +52,7 @@ namespace Assets.Scripts.Game.Terrain
                 for (int z = iz - halfSideLength; z <= iz + halfSideLength; z++)
                 {
                     Vector2Int key = new Vector2Int(x, z);
-                    float height = PerlinNoise.SuperimposedOctave(0.003f * key.x, 0.003f * key.y, 6) * 20;
+                    float height = PerlinNoise.SuperimposedOctave(MapGenerator.seed, 0.003f * key.x, 0.003f * key.y, 6) * 20;
                     heightMap.Add(key, height);
                 }
             }

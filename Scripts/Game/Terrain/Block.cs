@@ -28,7 +28,7 @@ namespace Assets.Scripts.Game.Terrain
         /// </summary>
         private float temperature;
         /// <summary>
-        /// 降水量:由百分比于最大降水量共同决定真实降水量
+        /// 降水量:由百分比与最大降水量共同决定真实降水量
         /// </summary>
         private float precipitation;
         /// <summary>
@@ -36,15 +36,10 @@ namespace Assets.Scripts.Game.Terrain
         /// </summary>
         private BiomeType biomeType;
 
-
+        public Color color;
 
         private Chunk chunk;
         private Vector2Int index;
-
-        private void AffectTemperatureByAltitude()
-        {
-
-        }
 
         public void Initialize(Chunk chunk, Vector2Int index)
         {
@@ -74,17 +69,26 @@ namespace Assets.Scripts.Game.Terrain
             int[] traingles = new int[6] { 0, 1, 2, 2, 3, 0 };
             meshFilter.mesh.vertices = vertices;
             meshFilter.mesh.triangles = traingles;
-            meshFilter.mesh.RecalculateNormals();
 
             //Set height
             float allHeight = 0;
             for (int i = 0; i < vertices.Length; i++) allHeight += vertices[i].y;
             height = allHeight * 0.25f;
 
-            //Set temperature and precipitation
-            baseTemperature = PerlinNoise.SuperimposedOctave(transform.position.x, transform.position.z);
-            precipitationPercentage = 
+            //Set temperature and precipitation,range 0 -> 100
+            baseTemperature = PerlinNoise.SuperimposedOctave(MapGenerator.seed - 1, transform.position.x * 0.03f, transform.position.z * 0.03f) * 37.5f + 50f;
+            precipitationPercentage = PerlinNoise.SuperimposedOctave(MapGenerator.seed - 2, transform.position.x * 0.03f, transform.position.z * 0.03f) * 37.5f + 50f;
 
+            temperature = baseTemperature - height * 0.1f;
+            precipitation = temperature * 0.01f * precipitationPercentage;
+
+            biomeType = Biome.BiomeSelector(temperature, precipitationPercentage);
+
+            color = Biome.GetColor(biomeType);
+            Color[] colors = new Color[4] { color, color, color, color };
+            meshFilter.mesh.colors = colors;
+
+            meshFilter.mesh.RecalculateNormals();
         }
 
 
