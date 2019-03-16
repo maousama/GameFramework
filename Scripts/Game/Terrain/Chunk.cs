@@ -34,6 +34,9 @@ namespace Assets.Scripts.Game.Terrain
                     blocks[x, z] = block;
                 }
             }
+            List<GameObject> gos = new List<GameObject>(SideLength * SideLength);
+            foreach (Block block in blocks) gos.Add(block.gameObject);
+            StaticBatchingUtility.Combine(gos.ToArray(), gameObject);
 
         }
 
