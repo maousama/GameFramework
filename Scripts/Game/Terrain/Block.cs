@@ -1,4 +1,5 @@
-﻿using AssetsManager;
+﻿using Assets.Scripts.Game.Terrain.Biomes;
+using AssetsManager;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -34,12 +35,14 @@ namespace Assets.Scripts.Game.Terrain
         /// <summary>
         /// 生物群落类型
         /// </summary>
-        private BiomeType biomeType;
+        private Biome biome;
 
         public Color color;
 
         private Chunk chunk;
         private Vector2Int index;
+
+        public float Height { get => height; private set => height = value; }
 
         public void Initialize(Chunk chunk, Vector2Int index)
         {
@@ -52,7 +55,7 @@ namespace Assets.Scripts.Game.Terrain
             MeshFilter meshFilter = gameObject.AddComponent<MeshFilter>();
             MeshRenderer meshRenderer = gameObject.AddComponent<MeshRenderer>();
 
-            meshRenderer.materials = new Material[] { AssetsAgent.GetAsset<Material>("BlockMaterial") };
+            meshRenderer.sharedMaterial = AssetsAgent.GetAsset<Material>("BlockMaterial");
             meshFilter.mesh = new Mesh();
             meshFilter.mesh.name = "Block Mesh";
 
@@ -73,22 +76,24 @@ namespace Assets.Scripts.Game.Terrain
             //Set height
             float allHeight = 0;
             for (int i = 0; i < vertices.Length; i++) allHeight += vertices[i].y;
-            height = allHeight * 0.25f;
+            Height = allHeight * 0.25f;
 
             //Set temperature and precipitation,range 0 -> 100
-            baseTemperature = PerlinNoise.SuperimposedOctave(MapGenerator.seed - 1, transform.position.x * 0.03f, transform.position.z * 0.03f) * 37.5f + 50f;
-            precipitationPercentage = PerlinNoise.SuperimposedOctave(MapGenerator.seed - 2, transform.position.x * 0.03f, transform.position.z * 0.03f) * 37.5f + 50f;
+            baseTemperature = PerlinNoise.SuperimposedOctave(MapGenerator.seed - 1, transform.position.x * 0.0003f, transform.position.z * 0.0003f) * 37.5f + 50f;
+            precipitationPercentage = PerlinNoise.SuperimposedOctave(MapGenerator.seed - 2, transform.position.x * 0.0003f, transform.position.z * 0.0003f) * 37.5f + 50f;
 
-            temperature = baseTemperature - height * 0.1f;
+            temperature = baseTemperature - Height * 0.1f;
             precipitation = temperature * 0.01f * precipitationPercentage;
 
-            biomeType = Biome.BiomeSelector(temperature, precipitationPercentage);
+            biome = Biome.BiomeSelector(temperature, precipitationPercentage, Height);
 
-            color = Biome.GetColor(biomeType);
+            color = biome.Color;
             Color[] colors = new Color[4] { color, color, color, color };
             meshFilter.mesh.colors = colors;
 
             meshFilter.mesh.RecalculateNormals();
+
+            biome.SetItem(this);
         }
 
 
