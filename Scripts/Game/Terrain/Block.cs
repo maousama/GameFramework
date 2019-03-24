@@ -37,20 +37,54 @@ namespace Assets.Scripts.Game.Terrain
         /// </summary>
         private Biome biome;
 
-        public Color color;
+        private Vector3[] vertices;
+        private int[] traingles;
+        private Color[] colors;
 
-        private Chunk chunk;
-        private Vector2Int index;
-
-        public float Height { get => height; private set => height = value; }
-
-        public void Initialize(Chunk chunk, Vector2Int index)
+        private void Awake()
         {
-            //Set gameObject
-            this.chunk = chunk;
-            this.index = index;
-            transform.parent = chunk.transform;
-            transform.localPosition = new Vector3(index.x + (0.5f - Chunk.halfSideLength), 0, index.y + (0.5f - Chunk.halfSideLength));
+            SetBlockInfo();
+        }
+
+        private void Start()
+        {
+            DrawMesh();
+        }
+
+        public void SetBlockInfo()
+        {
+            //Set traingles and vertices
+            int floorx = Mathf.FloorToInt(transform.position.x);
+            int ceilx = Mathf.CeilToInt(transform.position.x);
+            int floorz = Mathf.FloorToInt(transform.position.z);
+            int ceilz = Mathf.CeilToInt(transform.position.z);
+            vertices = new Vector3[4];
+            vertices[0] = new Vector3(-0.5f, MapGenerator.heightMap[new Vector2Int(floorx, floorz)], -0.5f);
+            vertices[1] = new Vector3(-0.5f, MapGenerator.heightMap[new Vector2Int(floorx, ceilz)], 0.5f);
+            vertices[2] = new Vector3(0.5f, MapGenerator.heightMap[new Vector2Int(ceilx, ceilz)], 0.5f);
+            vertices[3] = new Vector3(0.5f, MapGenerator.heightMap[new Vector2Int(ceilx, floorz)], -0.5f);
+            traingles = new int[6] { 0, 1, 2, 2, 3, 0 };
+
+            //Set height
+            float allHeight = 0;
+            for (int i = 0; i < vertices.Length; i++) allHeight += vertices[i].y;
+            height = allHeight * 0.25f;
+
+            //Set temperature and precipitation,range 0 -> 100
+            baseTemperature = PerlinNoise.SuperimposedOctave(MapGenerator.seed - 1, transform.position.x * 0.0003f, transform.position.z * 0.0003f) * 37.5f + 50f;
+            precipitationPercentage = PerlinNoise.SuperimposedOctave(MapGenerator.seed - 2, transform.position.x * 0.0003f, transform.position.z * 0.0003f) * 37.5f + 50f;
+
+            temperature = baseTemperature - height * 0.1f;
+            precipitation = temperature * 0.01f * precipitationPercentage;
+
+            biome = Biome.BiomeSelector(temperature, precipitationPercentage, height);
+        }
+
+
+        public void DrawMesh()
+        {
+            //Set color after SetBlockInfo
+            continue...
 
             MeshFilter meshFilter = gameObject.AddComponent<MeshFilter>();
             MeshRenderer meshRenderer = gameObject.AddComponent<MeshRenderer>();
@@ -59,42 +93,13 @@ namespace Assets.Scripts.Game.Terrain
             meshFilter.mesh = new Mesh();
             meshFilter.mesh.name = "Block Mesh";
 
-            //Set traingles and vertices
-            int floorx = Mathf.FloorToInt(transform.position.x);
-            int ceilx = Mathf.CeilToInt(transform.position.x);
-            int floorz = Mathf.FloorToInt(transform.position.z);
-            int ceilz = Mathf.CeilToInt(transform.position.z);
-            Vector3[] vertices = new Vector3[4];
-            vertices[0] = new Vector3(-0.5f, chunk.GetHeight(new Vector2Int(floorx, floorz)), -0.5f);
-            vertices[1] = new Vector3(-0.5f, chunk.GetHeight(new Vector2Int(floorx, ceilz)), 0.5f);
-            vertices[2] = new Vector3(0.5f, chunk.GetHeight(new Vector2Int(ceilx, ceilz)), 0.5f);
-            vertices[3] = new Vector3(0.5f, chunk.GetHeight(new Vector2Int(ceilx, floorz)), -0.5f);
-            int[] traingles = new int[6] { 0, 1, 2, 2, 3, 0 };
             meshFilter.mesh.vertices = vertices;
             meshFilter.mesh.triangles = traingles;
 
-            //Set height
-            float allHeight = 0;
-            for (int i = 0; i < vertices.Length; i++) allHeight += vertices[i].y;
-            Height = allHeight * 0.25f;
-
-            //Set temperature and precipitation,range 0 -> 100
-            baseTemperature = PerlinNoise.SuperimposedOctave(MapGenerator.seed - 1, transform.position.x * 0.0003f, transform.position.z * 0.0003f) * 37.5f + 50f;
-            precipitationPercentage = PerlinNoise.SuperimposedOctave(MapGenerator.seed - 2, transform.position.x * 0.0003f, transform.position.z * 0.0003f) * 37.5f + 50f;
-
-            temperature = baseTemperature - Height * 0.1f;
-            precipitation = temperature * 0.01f * precipitationPercentage;
-
-            biome = Biome.BiomeSelector(temperature, precipitationPercentage, Height);
-
-            color = biome.Color;
-            Color[] colors = new Color[4] { color, color, color, color };
             meshFilter.mesh.colors = colors;
-
             meshFilter.mesh.RecalculateNormals();
-
-            biome.SetItem(this);
         }
+
 
 
 

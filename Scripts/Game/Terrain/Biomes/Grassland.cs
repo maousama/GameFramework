@@ -1,5 +1,4 @@
-﻿using Assets.Scripts.Game.Item;
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -28,9 +27,7 @@ namespace Assets.Scripts.Game.Terrain.Biomes
 
         public override void SetItem(Block block)
         {
-            GameObject grass = new GameObject("Grass", typeof(Grass));
-            grass.transform.SetParent(block.transform);
-            grass.transform.localPosition = Vector3.up * block.Height;
+            
         }
     }
 }

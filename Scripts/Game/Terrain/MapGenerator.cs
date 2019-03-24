@@ -11,17 +11,22 @@ namespace Assets.Scripts.Game.Terrain
 
     public class MapGenerator : MonoSingleton<MapGenerator>
     {
-        public int seed2;
-        public static int seed = 1;
+        public static int seed = 5;
+
+        internal static Dictionary<Vector2Int, float> heightMap = new Dictionary<Vector2Int, float>();
+        internal static Dictionary<Vector2Int, Block> blockMap = new Dictionary<Vector2Int, Block>();
+        internal static Dictionary<Vector2Int, Chunk> chunkMap = new Dictionary<Vector2Int, Chunk>();
 
         private void Start()
         {
+            seed = UnityEngine.Random.Range(1, 999);
             for (int z = 0; z < 3; z++)
             {
                 for (int x = 0; x < 3; x++)
                 {
-                    Chunk chunk = new GameObject("Chunk", typeof(Chunk)).GetComponent<Chunk>();
-                    chunk.Initialize(new Vector2Int(x, z));
+                    GameObject chunk = new GameObject("Chunk");
+                    chunk.transform.position = new Vector3(x * Chunk.SideLength, 0, z * Chunk.SideLength);
+                    chunk.AddComponent<Chunk>();
                 }
             }
 
@@ -56,41 +61,9 @@ namespace Assets.Scripts.Game.Terrain
         //create plants, "Planting..."
         private IEnumerator GenerateMap()
         {
-            GenerateMapOperation generateMapOperation = new GenerateMapOperation();
+            //GenerateMapOperation generateMapOperation = new GenerateMapOperation();
 
             yield return null;
-        }
-    }
-
-
-    public class GenerateMapOperation : IOperation
-    {
-        public bool IsDone
-        {
-            get
-            {
-                throw new NotImplementedException();
-            }
-        }
-
-        public float Progress
-        {
-            get
-            {
-                throw new NotImplementedException();
-            }
-        }
-
-        public Action Completed
-        {
-            get
-            {
-                throw new NotImplementedException();
-            }
-            set
-            {
-
-            }
         }
     }
 }

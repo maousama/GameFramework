@@ -10,59 +10,69 @@ namespace Assets.Scripts.Game.Terrain
     public class Chunk : MonoBehaviour
     {
         public static int halfSideLength = 32;
-        public static int heightMagnification = 10;
+        public static int heightMagnification = 20;
         public static int SideLength { get { return halfSideLength * 2; } }
 
-        public float min, max;
 
-        private Vector2Int index;
+        private List<Vector2Int> blockMapKeys;
+        private List<Vector2Int> heightMapkeys;
 
-        public void Initialize(Vector2Int index)
+        private void Awake()
         {
-            this.index = index;
-            transform.position = new Vector3(index.x * SideLength, 0, index.y * SideLength);
-
+            //Create height map that its blocks need
             CreateHeightMap();
+            //Create block map
+            CreateBlockMap();
+        }
 
-            Block[,] blocks = new Block[SideLength, SideLength];
+        private void OnDestroy()
+        {
+            for (int i = 0; i < blockMapKeys.Count; i++) MapGenerator.blockMap.Remove(blockMapKeys[i]);
+            for (int i = 0; i < heightMapkeys.Count; i++) MapGenerator.heightMap.Remove(heightMapkeys[i]);
+        }
+
+        private void CreateBlockMap()
+        {
+            int blockCount = SideLength * SideLength;
+            blockMapKeys = new List<Vector2Int>();
+            List<GameObject> gameObjects = new List<GameObject>(blockCount);
+
+            Vector3 chunkPosition = transform.position;
             for (int z = 0; z < SideLength; z++)
             {
                 for (int x = 0; x < SideLength; x++)
                 {
-                    Block block = new GameObject("Block", typeof(Block)).GetComponent<Block>();
-                    block.Initialize(this, new Vector2Int(x, z));
-                    blocks[x, z] = block;
+                    GameObject blockGameObject = new GameObject("Block");
+                    blockGameObject.transform.parent = transform;
+                    blockGameObject.transform.localPosition = new Vector3(x + 0.5f - halfSideLength, 0, z + 0.5f - halfSideLength);
+                    Block block = blockGameObject.AddComponent<Block>();
+                    Vector3 blockPosition = block.transform.position;
+                    Vector2Int key = new Vector2Int(Mathf.FloorToInt(blockPosition.x), Mathf.FloorToInt(blockPosition.z));
+                    blockMapKeys.Add(key);
+                    MapGenerator.blockMap.Add(key, block);
+                    gameObjects.Add(block.gameObject);
                 }
             }
-            List<GameObject> gos = new List<GameObject>(SideLength * SideLength);
-            foreach (Block block in blocks) gos.Add(block.gameObject);
-            StaticBatchingUtility.Combine(gos.ToArray(), gameObject);
-
+            StaticBatchingUtility.Combine(gameObjects.ToArray(), gameObject);
         }
 
-
-        /// <summary>
-        /// Temporary real position to height
-        /// </summary>
-        private Dictionary<Vector2Int, float> heightMap;
         private void CreateHeightMap()
         {
-            heightMap = new Dictionary<Vector2Int, float>((SideLength + 1) * (SideLength + 1));
             int ix = (int)transform.position.x;
             int iz = (int)transform.position.z;
+            heightMapkeys = new List<Vector2Int>();
             for (int x = ix - halfSideLength; x <= ix + halfSideLength; x++)
             {
                 for (int z = iz - halfSideLength; z <= iz + halfSideLength; z++)
                 {
                     Vector2Int key = new Vector2Int(x, z);
-                    float height = PerlinNoise.SuperimposedOctave(MapGenerator.seed, 0.003f * key.x, 0.003f * key.y, 6) * 20;
-                    heightMap.Add(key, height);
+                    heightMapkeys.Add(key);
+                    float height = PerlinNoise.SuperimposedOctave(MapGenerator.seed, 0.003f * key.x, 0.003f * key.y, 6) * heightMagnification;
+                    if (!MapGenerator.heightMap.ContainsKey(key)) MapGenerator.heightMap.Add(key, height);
                 }
             }
         }
-        public float GetHeight(Vector2Int vector2Int)
-        {
-            return heightMap[vector2Int];
-        }
+
+
     }
 }
