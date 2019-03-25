@@ -36,6 +36,10 @@ namespace Assets.Scripts.Game.Terrain
         /// 生物群落类型
         /// </summary>
         private Biome biome;
+        /// <summary>
+        /// 邻居
+        /// </summary>
+        private Dictionary<Direction, Block> neighbours;
 
         private Vector3[] vertices;
         private int[] traingles;
@@ -51,13 +55,15 @@ namespace Assets.Scripts.Game.Terrain
             DrawMesh();
         }
 
-        public void SetBlockInfo()
+
+        private void SetHeight()
         {
+            Vector3 position = transform.position;
             //Set traingles and vertices
-            int floorx = Mathf.FloorToInt(transform.position.x);
-            int ceilx = Mathf.CeilToInt(transform.position.x);
-            int floorz = Mathf.FloorToInt(transform.position.z);
-            int ceilz = Mathf.CeilToInt(transform.position.z);
+            int floorx = Mathf.FloorToInt(position.x);
+            int ceilx = Mathf.CeilToInt(position.x);
+            int floorz = Mathf.FloorToInt(position.z);
+            int ceilz = Mathf.CeilToInt(position.z);
             vertices = new Vector3[4];
             vertices[0] = new Vector3(-0.5f, MapGenerator.heightMap[new Vector2Int(floorx, floorz)], -0.5f);
             vertices[1] = new Vector3(-0.5f, MapGenerator.heightMap[new Vector2Int(floorx, ceilz)], 0.5f);
@@ -69,6 +75,31 @@ namespace Assets.Scripts.Game.Terrain
             float allHeight = 0;
             for (int i = 0; i < vertices.Length; i++) allHeight += vertices[i].y;
             height = allHeight * 0.25f;
+        }
+
+        private void SetNeightbours()
+        {
+            Vector3 position = transform.position;
+            Vector2Int thisPos = new Vector2Int(Mathf.FloorToInt(position.x), Mathf.FloorToInt(position.z));
+            Vector2Int southwestPos = new Vector2Int(thisPos.x - 1, thisPos.y - 1);
+            Vector2Int southPos = new Vector2Int(thisPos.x, thisPos.y - 1);
+            Vector2Int southeastPos = new Vector2Int(thisPos.x + 1, thisPos.y - 1);
+            Vector2Int westPos = new Vector2Int(thisPos.x - 1, thisPos.y);
+            Vector2Int eastPos = new Vector2Int(thisPos.x + 1, thisPos.y);
+            Vector2Int northwestPos = new Vector2Int(thisPos.x - 1, thisPos.y + 1);
+            Vector2Int northPos = new Vector2Int(thisPos.x, thisPos.y);
+            Vector2Int northeastPos = new Vector2Int(thisPos.x + 1, thisPos.y + 1);
+
+            int directionCount = 8;
+            neighbours = new Dictionary<Direction, Block>(directionCount);
+            neighbours.Add(Direction.Southwest, MapGenerator.blockMap[southwestPos]);
+
+        }
+
+        public void SetBlockInfo()
+        {
+
+
 
             //Set temperature and precipitation,range 0 -> 100
             baseTemperature = PerlinNoise.SuperimposedOctave(MapGenerator.seed - 1, transform.position.x * 0.0003f, transform.position.z * 0.0003f) * 37.5f + 50f;
@@ -84,7 +115,7 @@ namespace Assets.Scripts.Game.Terrain
         public void DrawMesh()
         {
             //Set color after SetBlockInfo
-            continue...
+
 
             MeshFilter meshFilter = gameObject.AddComponent<MeshFilter>();
             MeshRenderer meshRenderer = gameObject.AddComponent<MeshRenderer>();
@@ -99,9 +130,5 @@ namespace Assets.Scripts.Game.Terrain
             meshFilter.mesh.colors = colors;
             meshFilter.mesh.RecalculateNormals();
         }
-
-
-
-
     }
 }
