@@ -13,7 +13,6 @@ namespace Assets.Scripts.Game.Terrain
         public static int heightMagnification = 20;
         public static int SideLength { get { return halfSideLength * 2; } }
 
-
         private List<Vector2Int> blockMapKeys;
         private List<Vector2Int> heightMapkeys;
 
@@ -33,15 +32,15 @@ namespace Assets.Scripts.Game.Terrain
 
         private void CreateBlockMap()
         {
-            int blockCount = SideLength * SideLength;
+
             blockMapKeys = new List<Vector2Int>();
-            List<GameObject> gameObjects = new List<GameObject>(blockCount);
 
             Vector3 chunkPosition = transform.position;
             for (int z = 0; z < SideLength; z++)
             {
                 for (int x = 0; x < SideLength; x++)
                 {
+                    //Create blocks
                     GameObject blockGameObject = new GameObject("Block");
                     blockGameObject.transform.parent = transform;
                     blockGameObject.transform.localPosition = new Vector3(x + 0.5f - halfSideLength, 0, z + 0.5f - halfSideLength);
@@ -50,8 +49,23 @@ namespace Assets.Scripts.Game.Terrain
                     Vector2Int key = new Vector2Int(Mathf.FloorToInt(blockPosition.x), Mathf.FloorToInt(blockPosition.z));
                     blockMapKeys.Add(key);
                     MapGenerator.blockMap.Add(key, block);
-                    gameObjects.Add(block.gameObject);
+
+
+                    //Set blocks height
+                    block.SetHeight();
+                    //Set blocks environment
+                    block.SetEnvironment();
                 }
+            }
+        }
+
+        internal void CombineBatches()
+        {
+            int blockCount = SideLength * SideLength;
+            List<GameObject> gameObjects = new List<GameObject>(blockCount);
+            for (int i = 0; i < blockMapKeys.Count; i++)
+            {
+                gameObjects.Add(MapGenerator.blockMap[blockMapKeys[i]].gameObject);
             }
             StaticBatchingUtility.Combine(gameObjects.ToArray(), gameObject);
         }
@@ -73,6 +87,15 @@ namespace Assets.Scripts.Game.Terrain
             }
         }
 
+        internal void DrawBlocks()
+        {
+            for (int i = 0; i < blockMapKeys.Count; i++)
+            {
+                Block block = MapGenerator.blockMap[blockMapKeys[i]];
+                block.SetNeightbours();
+                block.DrawMesh();
+            }
+        }
 
     }
 }

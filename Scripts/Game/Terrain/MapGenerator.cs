@@ -30,23 +30,7 @@ namespace Assets.Scripts.Game.Terrain
                 }
             }
 
-            //if (false)
-            //{
-            //    float min = 0;
-            //    float max = 0;
-            //    for (int i = 0; i < 1000; i++)
-            //    {
-            //        for (int j = 0; j < 1000; j++)
-            //        {
-            //            float value = PerlinNoise.SuperimposedOctave(seed2, i * 0.003f, j * 0.003f);
-            //            min = value < min ? value : min;
-            //            max = value > max ? value : max;
-
-            //        }
-            //    }
-            //    Debug.Log(min + " | | " + max);
-            //}
-
+            foreach (Chunk chunk in chunkMap.Values) chunk.DrawBlocks();
         }
 
         //chunk = 256*256*128 block

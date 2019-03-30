@@ -44,19 +44,9 @@ namespace Assets.Scripts.Game.Terrain
         private Vector3[] vertices;
         private int[] traingles;
         private Color[] colors;
+        private bool canDraw = false;
 
-        private void Awake()
-        {
-            SetBlockInfo();
-        }
-
-        private void Start()
-        {
-            DrawMesh();
-        }
-
-
-        private void SetHeight()
+        internal void SetHeight()
         {
             Vector3 position = transform.position;
             //Set traingles and vertices
@@ -77,30 +67,8 @@ namespace Assets.Scripts.Game.Terrain
             height = allHeight * 0.25f;
         }
 
-        private void SetNeightbours()
+        internal void SetEnvironment()
         {
-            Vector3 position = transform.position;
-            Vector2Int thisPos = new Vector2Int(Mathf.FloorToInt(position.x), Mathf.FloorToInt(position.z));
-            Vector2Int southwestPos = new Vector2Int(thisPos.x - 1, thisPos.y - 1);
-            Vector2Int southPos = new Vector2Int(thisPos.x, thisPos.y - 1);
-            Vector2Int southeastPos = new Vector2Int(thisPos.x + 1, thisPos.y - 1);
-            Vector2Int westPos = new Vector2Int(thisPos.x - 1, thisPos.y);
-            Vector2Int eastPos = new Vector2Int(thisPos.x + 1, thisPos.y);
-            Vector2Int northwestPos = new Vector2Int(thisPos.x - 1, thisPos.y + 1);
-            Vector2Int northPos = new Vector2Int(thisPos.x, thisPos.y);
-            Vector2Int northeastPos = new Vector2Int(thisPos.x + 1, thisPos.y + 1);
-
-            int directionCount = 8;
-            neighbours = new Dictionary<Direction, Block>(directionCount);
-            neighbours.Add(Direction.Southwest, MapGenerator.blockMap[southwestPos]);
-
-        }
-
-        public void SetBlockInfo()
-        {
-
-
-
             //Set temperature and precipitation,range 0 -> 100
             baseTemperature = PerlinNoise.SuperimposedOctave(MapGenerator.seed - 1, transform.position.x * 0.0003f, transform.position.z * 0.0003f) * 37.5f + 50f;
             precipitationPercentage = PerlinNoise.SuperimposedOctave(MapGenerator.seed - 2, transform.position.x * 0.0003f, transform.position.z * 0.0003f) * 37.5f + 50f;
@@ -111,24 +79,60 @@ namespace Assets.Scripts.Game.Terrain
             biome = Biome.BiomeSelector(temperature, precipitationPercentage, height);
         }
 
+        internal void SetNeightbours()
+        {
+            Vector3 position = transform.position;
+            Vector2Int thisPos = new Vector2Int(Mathf.FloorToInt(position.x), Mathf.FloorToInt(position.z));
+            Vector2Int southwestPos = new Vector2Int(thisPos.x - 1, thisPos.y - 1);
+            Vector2Int southPos = new Vector2Int(thisPos.x, thisPos.y - 1);
+            Vector2Int southeastPos = new Vector2Int(thisPos.x + 1, thisPos.y - 1);
+            Vector2Int westPos = new Vector2Int(thisPos.x - 1, thisPos.y);
+            Vector2Int eastPos = new Vector2Int(thisPos.x + 1, thisPos.y);
+            Vector2Int northwestPos = new Vector2Int(thisPos.x - 1, thisPos.y + 1);
+            Vector2Int northPos = new Vector2Int(thisPos.x, thisPos.y + 1);
+            Vector2Int northeastPos = new Vector2Int(thisPos.x + 1, thisPos.y + 1);
 
-        public void DrawMesh()
+            int directionCount = 8;
+            neighbours = new Dictionary<Direction, Block>(directionCount);
+            if (MapGenerator.blockMap.ContainsKey(southwestPos)) neighbours.Add(Direction.Southwest, MapGenerator.blockMap[southwestPos]);
+            if (MapGenerator.blockMap.ContainsKey(southPos)) neighbours.Add(Direction.South, MapGenerator.blockMap[southPos]);
+            if (MapGenerator.blockMap.ContainsKey(southeastPos)) neighbours.Add(Direction.Southeast, MapGenerator.blockMap[southeastPos]);
+            if (MapGenerator.blockMap.ContainsKey(westPos)) neighbours.Add(Direction.West, MapGenerator.blockMap[westPos]);
+            if (MapGenerator.blockMap.ContainsKey(eastPos)) neighbours.Add(Direction.East, MapGenerator.blockMap[eastPos]);
+            if (MapGenerator.blockMap.ContainsKey(northwestPos)) neighbours.Add(Direction.Northwest, MapGenerator.blockMap[northwestPos]);
+            if (MapGenerator.blockMap.ContainsKey(northPos)) neighbours.Add(Direction.North, MapGenerator.blockMap[northPos]);
+            if (MapGenerator.blockMap.ContainsKey(northeastPos)) neighbours.Add(Direction.Northeast, MapGenerator.blockMap[northeastPos]);
+
+            canDraw = neighbours.Count == 8;
+            if (canDraw)
+            {
+                colors = new Color[4];
+                colors[0] = (MapGenerator.blockMap[southwestPos].biome.Color + MapGenerator.blockMap[southPos].biome.Color + MapGenerator.blockMap[westPos].biome.Color + biome.Color) * 0.25f;
+                colors[1] = (MapGenerator.blockMap[westPos].biome.Color + MapGenerator.blockMap[northwestPos].biome.Color + MapGenerator.blockMap[northPos].biome.Color + biome.Color) * 0.25f;
+                colors[2] = (MapGenerator.blockMap[northPos].biome.Color + MapGenerator.blockMap[northeastPos].biome.Color + MapGenerator.blockMap[eastPos].biome.Color + biome.Color) * 0.25f;
+                colors[3] = (MapGenerator.blockMap[eastPos].biome.Color + MapGenerator.blockMap[southPos].biome.Color + MapGenerator.blockMap[southeastPos].biome.Color + biome.Color) * 0.25f;
+            }
+        }
+
+        internal void DrawMesh()
         {
             //Set color after SetBlockInfo
+            if (canDraw)
+            {
+                MeshFilter meshFilter = gameObject.AddComponent<MeshFilter>();
+                MeshRenderer meshRenderer = gameObject.AddComponent<MeshRenderer>();
 
+                meshRenderer.sharedMaterial = AssetsAgent.GetAsset<Material>("BlockMaterial");
+                meshFilter.mesh = new Mesh();
+                meshFilter.mesh.name = "Block Mesh";
 
-            MeshFilter meshFilter = gameObject.AddComponent<MeshFilter>();
-            MeshRenderer meshRenderer = gameObject.AddComponent<MeshRenderer>();
+                meshFilter.mesh.vertices = vertices;
+                meshFilter.mesh.triangles = traingles;
 
-            meshRenderer.sharedMaterial = AssetsAgent.GetAsset<Material>("BlockMaterial");
-            meshFilter.mesh = new Mesh();
-            meshFilter.mesh.name = "Block Mesh";
+                meshFilter.mesh.colors = colors;
+                meshFilter.mesh.RecalculateNormals();
+            }
 
-            meshFilter.mesh.vertices = vertices;
-            meshFilter.mesh.triangles = traingles;
-
-            meshFilter.mesh.colors = colors;
-            meshFilter.mesh.RecalculateNormals();
         }
     }
 }
