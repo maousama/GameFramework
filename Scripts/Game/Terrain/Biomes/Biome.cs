@@ -15,7 +15,6 @@ namespace Assets.Scripts.Game.Terrain.Biomes
         public abstract void SetItem(Block block);
         public abstract Color Color { get; }
 
-
         public static Biome BiomeSelector(float temperature, float precipitationPercentage, float height)
         {
             if (temperature < 10)

@@ -70,8 +70,8 @@ namespace Assets.Scripts.Game.Terrain
         internal void SetEnvironment()
         {
             //Set temperature and precipitation,range 0 -> 100
-            baseTemperature = PerlinNoise.SuperimposedOctave(MapGenerator.seed - 1, transform.position.x * 0.0003f, transform.position.z * 0.0003f) * 37.5f + 50f;
-            precipitationPercentage = PerlinNoise.SuperimposedOctave(MapGenerator.seed - 2, transform.position.x * 0.0003f, transform.position.z * 0.0003f) * 37.5f + 50f;
+            baseTemperature = PerlinNoise.SuperimposedOctave(MapGenerator.seed - 1, transform.position.x * 0.003f, transform.position.z * 0.003f) * 37.5f + 50f;
+            precipitationPercentage = PerlinNoise.SuperimposedOctave(MapGenerator.seed - 2, transform.position.x * 0.003f, transform.position.z * 0.003f) * 37.5f + 50f;
 
             temperature = baseTemperature - height * 0.1f;
             precipitation = temperature * 0.01f * precipitationPercentage;

@@ -5,6 +5,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using UnityEngine;
+using Random = System.Random;
 
 namespace Assets.Scripts.Game.Terrain
 {
@@ -19,18 +20,7 @@ namespace Assets.Scripts.Game.Terrain
 
         private void Start()
         {
-            seed = UnityEngine.Random.Range(1, 999);
-            for (int z = 0; z < 3; z++)
-            {
-                for (int x = 0; x < 3; x++)
-                {
-                    GameObject chunk = new GameObject("Chunk");
-                    chunk.transform.position = new Vector3(x * Chunk.SideLength, 0, z * Chunk.SideLength);
-                    chunk.AddComponent<Chunk>();
-                }
-            }
-
-            foreach (Chunk chunk in chunkMap.Values) chunk.DrawBlocks();
+            StartCoroutine(GenerateMap());
         }
 
         //chunk = 256*256*128 block
@@ -46,7 +36,28 @@ namespace Assets.Scripts.Game.Terrain
         private IEnumerator GenerateMap()
         {
             //GenerateMapOperation generateMapOperation = new GenerateMapOperation();
+            seed = UnityEngine.Random.Range(0,18596);
+            Debug.Log(seed);
+            for (int z = 0; z <= 0; z++)
+            {
+                for (int x = 0; x <= 0; x++)
+                {
+                    GameObject gameObject = new GameObject("Chunk");
+                    gameObject.transform.position = new Vector3(x * Chunk.SideLength, 0, z * Chunk.SideLength);
+                    Chunk chunk = gameObject.AddComponent<Chunk>();
+                    chunkMap.Add(new Vector2Int(x, z), chunk);
+                    chunk.SetHeightMap();
+                    yield return null;
+                    chunk.SetBlockMap();
+                }
+            }
 
+            foreach (Chunk chunk in chunkMap.Values)
+            {
+                chunk.DrawBlocks();
+                yield return null;
+                chunk.CombineBatches();
+            }
             yield return null;
         }
     }

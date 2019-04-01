@@ -9,28 +9,51 @@ namespace Assets.Scripts.Game.Terrain
 {
     public class Chunk : MonoBehaviour
     {
-        public static int halfSideLength = 32;
-        public static int heightMagnification = 20;
-        public static int SideLength { get { return halfSideLength * 2; } }
+        internal static int halfSideLength = 32;
+        internal static int heightMagnification = 20;
+        internal static int SideLength { get { return halfSideLength * 2; } }
 
-        private List<Vector2Int> blockMapKeys;
-        private List<Vector2Int> heightMapkeys;
+        internal List<Vector2Int> blockMapKeys;
+        internal List<Vector2Int> heightMapkeys;
 
-        private void Awake()
+        //private void Awake()
+        //{
+        //    //Create height map that its blocks need
+        //    CreateHeightMap();
+        //    //Create block map
+        //    CreateBlockMap();
+        //}
+
+        //private void OnDestroy()
+        //{
+        //    for (int i = 0; i < blockMapKeys.Count; i++) MapGenerator.blockMap.Remove(blockMapKeys[i]);
+        //    for (int i = 0; i < heightMapkeys.Count; i++) MapGenerator.heightMap.Remove(heightMapkeys[i]);
+        //}
+
+        /// <summary>
+        /// Step 1: Set its blocks height
+        /// </summary>
+        internal void SetHeightMap()
         {
-            //Create height map that its blocks need
-            CreateHeightMap();
-            //Create block map
-            CreateBlockMap();
+            int ix = (int)transform.position.x;
+            int iz = (int)transform.position.z;
+            heightMapkeys = new List<Vector2Int>();
+            for (int x = ix - halfSideLength; x <= ix + halfSideLength; x++)
+            {
+                for (int z = iz - halfSideLength; z <= iz + halfSideLength; z++)
+                {
+                    Vector2Int key = new Vector2Int(x, z);
+                    heightMapkeys.Add(key);
+                    float height = PerlinNoise.SuperimposedOctave(MapGenerator.seed , 0.003f * key.x, 0.003f * key.y, 5) * heightMagnification;
+                    if (!MapGenerator.heightMap.ContainsKey(key)) MapGenerator.heightMap.Add(key, height);
+                }
+            }
         }
 
-        private void OnDestroy()
-        {
-            for (int i = 0; i < blockMapKeys.Count; i++) MapGenerator.blockMap.Remove(blockMapKeys[i]);
-            for (int i = 0; i < heightMapkeys.Count; i++) MapGenerator.heightMap.Remove(heightMapkeys[i]);
-        }
-
-        private void CreateBlockMap()
+        /// <summary>
+        /// Step 2: Set its blocks height and environment
+        /// </summary>
+        internal void SetBlockMap()
         {
 
             blockMapKeys = new List<Vector2Int>();
@@ -50,7 +73,6 @@ namespace Assets.Scripts.Game.Terrain
                     blockMapKeys.Add(key);
                     MapGenerator.blockMap.Add(key, block);
 
-
                     //Set blocks height
                     block.SetHeight();
                     //Set blocks environment
@@ -59,6 +81,22 @@ namespace Assets.Scripts.Game.Terrain
             }
         }
 
+        /// <summary>
+        /// step 3: Set its blocks neighbours and draw mesh
+        /// </summary>
+        internal void DrawBlocks()
+        {
+            for (int i = 0; i < blockMapKeys.Count; i++)
+            {
+                Block block = MapGenerator.blockMap[blockMapKeys[i]];
+                block.SetNeightbours();
+                block.DrawMesh();
+            }
+        }
+
+        /// <summary>
+        /// step 4: combine its blcoks mesh
+        /// </summary>
         internal void CombineBatches()
         {
             int blockCount = SideLength * SideLength;
@@ -70,32 +108,7 @@ namespace Assets.Scripts.Game.Terrain
             StaticBatchingUtility.Combine(gameObjects.ToArray(), gameObject);
         }
 
-        private void CreateHeightMap()
-        {
-            int ix = (int)transform.position.x;
-            int iz = (int)transform.position.z;
-            heightMapkeys = new List<Vector2Int>();
-            for (int x = ix - halfSideLength; x <= ix + halfSideLength; x++)
-            {
-                for (int z = iz - halfSideLength; z <= iz + halfSideLength; z++)
-                {
-                    Vector2Int key = new Vector2Int(x, z);
-                    heightMapkeys.Add(key);
-                    float height = PerlinNoise.SuperimposedOctave(MapGenerator.seed, 0.003f * key.x, 0.003f * key.y, 6) * heightMagnification;
-                    if (!MapGenerator.heightMap.ContainsKey(key)) MapGenerator.heightMap.Add(key, height);
-                }
-            }
-        }
-
-        internal void DrawBlocks()
-        {
-            for (int i = 0; i < blockMapKeys.Count; i++)
-            {
-                Block block = MapGenerator.blockMap[blockMapKeys[i]];
-                block.SetNeightbours();
-                block.DrawMesh();
-            }
-        }
+        
 
     }
 }

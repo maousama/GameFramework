@@ -1,4 +1,5 @@
-﻿using UnityEngine;
+﻿using System;
+using UnityEngine;
 namespace Assets.Scripts.Game.Terrain
 {
     public class PerlinNoise
@@ -33,7 +34,7 @@ namespace Assets.Scripts.Game.Terrain
 
         private static int[] GetGradient(int ix, int iy, int seed)
         {
-            int randomNum = (seed * iy + ix * (iy * ix * 60493 - seed + 19990303) - (353 * seed) + 1376312589 - 233 * iy) & 0x7fffffff;
+            int randomNum = seed * ix * iy - ix * 7 - iy * ix - seed;
             int index = randomNum % 8;
 
             index = index < 0 ? index + 8 : index;
@@ -75,5 +76,7 @@ namespace Assets.Scripts.Game.Terrain
             }
             return result;
         }
+
+
     }
 }
