@@ -471,7 +471,7 @@ MonoBehaviour:
   defaultSelected: {fileID: 9098155485036440110}
   frame: {fileID: 0}
   progressBar: {fileID: 9098155484794253338}
-  progressSpeed: 0.001
+  progressSpeed: 0.01
   maxProgress: 1
 --- !u!1 &9098155485579837304
 GameObject:
