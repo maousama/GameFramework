@@ -9,7 +9,7 @@ namespace Assets.Scripts.Game.Terrain.Blocks
 {
     internal class Air : Block
     {
-        internal static string blockName = "Air";
+        internal static readonly string blockName = "Air";
         internal override string Name { get { return blockName; } }
         internal override BlockState State { get { return BlockState.None; } }
 

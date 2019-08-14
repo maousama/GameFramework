@@ -11,12 +11,13 @@ namespace Assets.Scripts.Game.Terrain
     internal class Map : MonoSingleton<Map>
     {
         internal static int Seed = 1;
-        internal static readonly int SeaLevel = -5;
+        internal static readonly int SeaLevel = 25;
 
         /// <summary>
         /// 网格信息Chunk产生时添加信息,Chunk被删除时候删除信息
         /// </summary>
         internal Dictionary<Vector2Int, CoordinateInfo> coordinateInfoMap = new Dictionary<Vector2Int, CoordinateInfo>();
+
         private Dictionary<Vector3Int, List<Block>> blockMap = new Dictionary<Vector3Int, List<Block>>();
         private Dictionary<Vector2Int, Chunk> chunkMap = new Dictionary<Vector2Int, Chunk>();
 

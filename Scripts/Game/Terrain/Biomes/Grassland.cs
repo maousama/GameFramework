@@ -4,6 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using Assets.Scripts.Game.Terrain.Blocks;
+using UnityEngine;
 
 namespace Assets.Scripts.Game.Terrain.Biomes
 {
@@ -12,13 +13,30 @@ namespace Assets.Scripts.Game.Terrain.Biomes
         internal static readonly string BiomeName = "GrassLand";
         internal override string Name { get { return BiomeName; } }
 
-        internal override string GetBlockByStratum(int stratum)
+        internal override void SetStratum(CoordinateInfo coordinateInfo)
         {
-            switch (stratum)
+            float noiseValue2D = PerlinNoise.PerlinNoise2D(Map.Seed - 1, coordinateInfo.position.x * 0.03f, coordinateInfo.position.y * 0.03f);
+            noiseValue2D = (noiseValue2D + 0.8f) * 0.5f;
+            int coverCount = (int)(noiseValue2D * Chunk.HalfHeight * 0.5f);
+            for (int y = 2 * Chunk.HalfHeight - 1; y > -1; y--)
             {
-                case 0: return Stone.blockName;
-                case 1: return Dirt.blockName;
-                default: return Air.blockName;
+                float density = GetDensity(coordinateInfo, y);
+                if (density > 0)
+                {
+                    if (coverCount > 0)
+                    {
+                        coordinateInfo.SetBlock(y, Dirt.blockName);
+                        coverCount--;
+                    }
+                    else
+                    {
+                        coordinateInfo.SetBlock(y, Stone.blockName);
+                    }
+                }
+                else
+                {
+                    SetWater(coordinateInfo, y);
+                }
             }
         }
     }

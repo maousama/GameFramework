@@ -13,7 +13,7 @@ namespace Assets.Scripts.Game.Terrain
 
         internal Vector3Int position;
         internal Vector2Int index;
-        private Dictionary<string, BlocksRenderer> blockNameToBlocksRenderer = new Dictionary<string, BlocksRenderer>();
+        private Dictionary<string, BlockRenderer> blockNameToBlockRenderer = new Dictionary<string, BlockRenderer>();
 
         /// <summary>
         /// 初始化
@@ -31,6 +31,19 @@ namespace Assets.Scripts.Game.Terrain
         {
             DestroyLatticeInfos();
             DestroyBlocks();
+            DestroyBlockRenderers();
+        }
+
+        /// <summary>
+        /// 删除方块渲染器
+        /// </summary>
+        private void DestroyBlockRenderers()
+        {
+            foreach (var key in blockNameToBlockRenderer.Keys)
+            {
+                Destroy(blockNameToBlockRenderer[key]);
+            }
+            blockNameToBlockRenderer.Clear();
         }
         /// <summary>
         /// 删除关联的块
@@ -67,134 +80,49 @@ namespace Assets.Scripts.Game.Terrain
                     Map.Instance.coordinateInfoMap.Remove(vector2Int);
                 }
             }
-
         }
+
         /// <summary>
         /// 创建网格数据
         /// </summary>
         private void CreateCoordinateInfos()
         {
-            //设置温度湿度生物群落信息
-            SetTemperatureAndPrecipitationInfo();
-            for (int z = -HalfLength; z < HalfLength; z++)
-            {
-                for (int x = -HalfLength; x < HalfLength; x++)
-                {
-
-                }
-            }
-        }
-        /// <summary>
-        /// 生成网格数据存储生成的温度湿度信息
-        /// </summary>
-        private void SetTemperatureAndPrecipitationInfo()
-        {
             for (int z = -HalfLength; z < HalfLength; z++)
             {
                 for (int x = -HalfLength; x < HalfLength; x++)
                 {
                     Vector2Int vector2Int = new Vector2Int(position.x + x, position.z + z);
-                    CoordinateInfo info = new CoordinateInfo();
 
+                    CoordinateInfo info = new CoordinateInfo();
+                    info.position = vector2Int;
                     info.precipitation = PerlinNoise.PerlinNoise2D(Map.Seed + 1, (vector2Int.x + 0.5f) * 0.003f, (vector2Int.y + 0.5f) * 0.003f);
                     info.baseTemperature = PerlinNoise.PerlinNoise2D(Map.Seed + 2, (vector2Int.x + 0.5f) * 0.003f, (vector2Int.y + 0.5f) * 0.003f);
 
                     info.biomeName = Biome.SelectBiome(info.baseTemperature, info.precipitation);
+                    Biome currentBoime = Biome.GetBiomeByName(info.biomeName);
+
+                    currentBoime.SetStratum(info);
 
                     Map.Instance.coordinateInfoMap.Add(vector2Int, info);
                 }
             }
         }
-
-
-
         /// <summary>
-        /// 风蚀地形
-        /// </summary>
-        private void MakeErosion()
-        {
-            float v = 1 / HalfHeight;
-            for (int y = 0; y < HalfHeight * 2; y++)
-            {
-                for (int z = -HalfLength; z < HalfLength; z++)
-                {
-                    for (int x = -HalfLength; x < HalfLength; x++)
-                    {
-                        Vector3 realPosition = position + new Vector3(x + 0.5f, y + 0.5f, z + 0.5f);
-                        Vector2Int vector2Int = new Vector2Int(position.x + x, position.z + z);
-                        //获取噪声值为-1至1;
-                        float noiseValue = PerlinNoise.SuperimposedOctave3D(Map.Seed, realPosition.x * 0.017f, realPosition.y * 0.017f, realPosition.z * 0.017f);
-                        //越高值越小
-                        noiseValue = noiseValue - 2 + 2 * v * y;
-                        if (noiseValue < 0) Map.Instance.coordinateInfoMap[vector2Int].blocks[y] = Air.blockName;
-                    }
-                }
-            }
-        }
-        /// <summary>
-        /// 生成底层:创建0.25halfHeight->1.5halfHeight;
-        /// </summary>
-        private void CreateStratums()
-        {
-            float stratumHeight = HalfHeight * 0.5f;
-            for (int z = -HalfLength; z < HalfLength; z++)
-            {
-                for (int x = -HalfLength; x < HalfLength; x++)
-                {
-                    Vector2Int vector2Int = new Vector2Int(position.x + x, position.z + z);
-                    float baseHeight = PerlinNoise.PerlinNoise2D(Map.Seed + 3, (vector2Int.x + 0.5f) * 0.003f, (vector2Int.y + 0.5f) * 0.003f);
-                    baseHeight = (((baseHeight + 1) * 0.25f) + 0.5f) * stratumHeight;
-                    CoordinateInfo coordinateInfo = Map.Instance.coordinateInfoMap[vector2Int];
-                    coordinateInfo.blocks[0] = BaseStone.blockName;
-
-                    int currentHeight = 0;
-                    for (int y = 1; y < baseHeight; y++)
-                    {
-                        coordinateInfo.blocks[y] = BaseStone.blockName;
-                        currentHeight = y + 1;
-                    }
-
-                    for (int stratum = 0; stratum < 2; stratum++)
-                    {
-                        float noise = PerlinNoise.PerlinNoise2D(Map.Seed + 4321 + stratum, (vector2Int.x + 0.5f) * 0.007f, (vector2Int.y + 0.5f) * 0.007f);
-                        //0->0.5HalfHeight * 0.5层高
-                        float h = (noise + 1) * 0.5f * stratumHeight;
-                        float destHeight = currentHeight + h;
-                        string curBlock = Biome.GetBiomeByName(coordinateInfo.biomeName).GetBlockByStratum(stratum);
-                        for (int y = currentHeight; y < destHeight; y++)
-                        {
-                            coordinateInfo.blocks[y] = curBlock;
-                            currentHeight = y;
-                        }
-                    }
-
-                }
-            }
-        }
-
-        /// <summary>
-        /// 创建关联的方块
+        /// 创建方块
         /// </summary>
         private void CreateBlocks()
         {
-            for (int y = 0; y < HalfHeight * 2 - 1; y++)
+            for (int z = -HalfLength - 1; z < HalfLength; z++)
             {
-                for (int z = -HalfLength - 1; z < HalfLength; z++)
+                for (int x = -HalfLength - 1; x < HalfLength; x++)
                 {
-                    for (int x = -HalfLength - 1; x < HalfLength; x++)
+                    for (int y = 0; y < HalfHeight * 2 - 1; y++)
                     {
                         CreateBlock(x, y, z);
                     }
                 }
             }
         }
-        /// <summary>
-        /// 创建Block由CreateBlocks调用
-        /// </summary>
-        /// <param name="x"></param>
-        /// <param name="y"></param>
-        /// <param name="z"></param>
-        /// <param name="batches"></param>
         private void CreateBlock(int x, int y, int z)
         {
             Vector3Int vector3Int = position + new Vector3Int(x, y, z);
@@ -212,8 +140,8 @@ namespace Assets.Scripts.Game.Terrain
                 if (!Map.Instance.coordinateInfoMap.ContainsKey(coordinateInfoKeys[i])) return;
                 else
                 {
-                    blocks[i] = Map.Instance.coordinateInfoMap[coordinateInfoKeys[i]].blocks[y];
-                    blocks[i + 4] = Map.Instance.coordinateInfoMap[coordinateInfoKeys[i]].blocks[y + 1];
+                    blocks[i] = Map.Instance.coordinateInfoMap[coordinateInfoKeys[i]].GetBlock(y);
+                    blocks[i + 4] = Map.Instance.coordinateInfoMap[coordinateInfoKeys[i]].GetBlock(y + 1);
                 }
             }
 
@@ -236,7 +164,7 @@ namespace Assets.Scripts.Game.Terrain
                 if (!stateHash.Contains(state)) stateHash.Add(state);
             }
             //当方块信息均为固体时候不进行绘制(普通固体不透明)
-            //if (stateHash.Count == 1 && typeNameToIndexes.Keys.Count < 3 && (stateHash.Contains(BlockState.Solid) || stateHash.Contains(BlockState.None))) return;
+            if (stateHash.Count == 1 && stateHash.Contains(BlockState.Solid)) return;
 
             //绘制时候使用typeNameToIndexes对所有种类的方块进行绘制
             foreach (string blockName in typeNameToIndexes.Keys)
@@ -244,15 +172,15 @@ namespace Assets.Scripts.Game.Terrain
                 if (blockName == Air.blockName) continue;
                 else if (Block.GetInstance(blockName).State == BlockState.Liquid && !stateHash.Contains(BlockState.None)) continue;
 
-                if (!blockNameToBlocksRenderer.ContainsKey(blockName))
+                if (!blockNameToBlockRenderer.ContainsKey(blockName))
                 {
-                    GameObject blocksRendererGameObject = new GameObject(blockName);
-                    blocksRendererGameObject.transform.SetParent(transform);
-                    blocksRendererGameObject.transform.position = transform.position;
+                    GameObject blockRendererGameObject = new GameObject(blockName);
+                    blockRendererGameObject.transform.SetParent(transform);
+                    blockRendererGameObject.transform.position = transform.position;
 
-                    BlocksRenderer blocksRenderer = blocksRendererGameObject.AddComponent<BlocksRenderer>();
+                    BlockRenderer blocksRenderer = blockRendererGameObject.AddComponent<BlockRenderer>();
 
-                    blockNameToBlocksRenderer.Add(blockName, blocksRenderer);
+                    blockNameToBlockRenderer.Add(blockName, blocksRenderer);
                 }
 
                 bool[] scalars = new bool[8];
@@ -265,7 +193,7 @@ namespace Assets.Scripts.Game.Terrain
                 MarchingCubes.SetAllMeshInfo(scalars, out vertices, out triangles, out normals);
 
                 GameObject blockGameObject = new GameObject(vector3Int + blockName);
-                blockGameObject.transform.SetParent(blockNameToBlocksRenderer[blockName].transform);
+                blockGameObject.transform.SetParent(blockNameToBlockRenderer[blockName].transform);
 
                 Block block = (Block)blockGameObject.AddComponent(Block.GetType(blockName));
                 block.Init(this, vector3Int, vertices, normals, triangles);
@@ -278,7 +206,7 @@ namespace Assets.Scripts.Game.Terrain
         /// </summary>
         private void DrawBlocks()
         {
-            foreach (BlocksRenderer renderer in blockNameToBlocksRenderer.Values)
+            foreach (BlockRenderer renderer in blockNameToBlockRenderer.Values)
             {
                 renderer.Draw();
             }

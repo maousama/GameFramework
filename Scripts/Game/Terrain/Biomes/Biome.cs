@@ -5,6 +5,7 @@ using System.Linq;
 using System.Reflection;
 using System.Text;
 using System.Threading.Tasks;
+using UnityEngine;
 
 namespace Assets.Scripts.Game.Terrain.Biomes
 {
@@ -41,7 +42,33 @@ namespace Assets.Scripts.Game.Terrain.Biomes
         }
 
         internal abstract string Name { get; }
-        internal abstract string GetBlockByStratum(int stratum);
+        /// <summary>
+        /// 设置地层由Chunk进行调用
+        /// </summary>
+        /// <param name="coordinateInfo"></param>
+        internal abstract void SetStratum(CoordinateInfo coordinateInfo);
+
+        protected float GetDensity(CoordinateInfo coordinateInfo, int y)
+        {
+            Vector3 realPos = new Vector3(coordinateInfo.position.x + 0.5f, y + 0.5f, coordinateInfo.position.y + 0.5f);
+            float noiseValue = PerlinNoise.PerlinNoise3D(Map.Seed, realPos.x * 0.03f, realPos.y * 0.03f, realPos.z * 0.03f);
+            float density = noiseValue + 1 - y * 0.03f;
+            return density;
+        }
+        protected void SetWater(CoordinateInfo coordinateInfo, int y)
+        {
+            if (y < Map.SeaLevel)
+            {
+                if (coordinateInfo.GetTemperature(y) < 0)
+                {
+                    coordinateInfo.SetBlock(y, Ice.blockName);
+                }
+                else
+                {
+                    coordinateInfo.SetBlock(y, Water.blockName);
+                }
+            }
+        }
     }
     //if (temperature < 10)
     //{
