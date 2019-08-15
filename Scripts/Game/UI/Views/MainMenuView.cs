@@ -44,9 +44,9 @@ public class MainMenuView : View
     public void NewButtonOnClick()
     {
         AsyncOperation asyncOperation = SceneManager.LoadSceneAsync(1);
-        Manager.Instance.CloseFrame(frame);
+        UIManager.Instance.CloseFrame(frame);
         asyncOperation.allowSceneActivation = true;
-        asyncOperation.completed += delegate (AsyncOperation async) { Manager.Instance.OpenFrame("LoadingView"); };
+        asyncOperation.completed += delegate (AsyncOperation async) { UIManager.Instance.OpenFrame("LoadingView"); };
     }
 
     public void ContinueButtonOnClick()

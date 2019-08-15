@@ -22,7 +22,7 @@ public class GameLoop : MonoBehaviour
     // Use this for initialization
     void Start()
     {
-        Manager.Instance.OpenFrame("MainMenu");
+        UIManager.Instance.OpenFrame("MainMenu");
     }
     // Update is called once per frame
     void Update()
