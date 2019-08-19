@@ -1,9 +1,8 @@
 ﻿using UnityEngine;
-namespace Assets.Scripts.UIFramework
+namespace Assets.Scripts.UISystem
 {
     internal class AssetsAgent
     {
-
         internal static T GetAsset<T>(string name) where T : Object
         {
             return Resources.Load<T>(name);

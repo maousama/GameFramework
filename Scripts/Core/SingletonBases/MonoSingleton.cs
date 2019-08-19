@@ -35,23 +35,14 @@ public class MonoSingleton<T> : MonoBehaviour where T : MonoSingleton<T>
     /// </summary>
     protected virtual void Init() { }
 
-
     private void OnDestroy()
     {
-        if (instance == this)
-        {
-            OnInstanceDestroy();
-        }
+        OnInstanceDestroy();
     }
 
     protected virtual void OnInstanceDestroy()
     {
         instance = null;
-        print(typeof(T) + " Instance has destroied");
-    }
-
-    public static T Check()
-    {
-        return Instance;
+        print(typeof(T) + " instance has destroied");
     }
 }

@@ -1,4 +1,4 @@
-﻿using Assets.Scripts.UIFramework;
+﻿using Assets.Scripts.UISystem;
 using UnityEditor;
 using UnityEngine;
 using UnityEngine.UI;
@@ -13,7 +13,7 @@ public class MenuItems : MonoBehaviour
         go.AddComponent<CanvasScaler>();
         go.AddComponent<GraphicRaycaster>();
         go.AddComponent<CanvasGroup>();
-        go.AddComponent<Frame>();
+        //go.AddComponent<Frame>();
         canvas.renderMode = RenderMode.ScreenSpaceCamera;
         GameObject componentContainer = new GameObject("ComponentContainer", typeof(RectTransform));
         componentContainer.transform.SetParent(go.transform);

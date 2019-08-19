@@ -1,5 +1,5 @@
 ﻿using Assets.Scripts.MultipleLang;
-using Assets.Scripts.UIFramework;
+using Assets.Scripts.UISystem;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 using UnityEngine.UI;
@@ -44,9 +44,9 @@ public class MainMenuView : View
     public void NewButtonOnClick()
     {
         AsyncOperation asyncOperation = SceneManager.LoadSceneAsync(1);
-        UIManager.Instance.CloseFrame(frame);
+        //UISystem.Instance.CloseFrame(frame);
         asyncOperation.allowSceneActivation = true;
-        asyncOperation.completed += delegate (AsyncOperation async) { UIManager.Instance.OpenFrame("LoadingView"); };
+        //asyncOperation.completed += delegate (AsyncOperation async) { UISystem.Instance.OpenFrame("LoadingView"); };
     }
 
     public void ContinueButtonOnClick()
